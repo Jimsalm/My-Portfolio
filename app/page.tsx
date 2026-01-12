@@ -1,12 +1,8 @@
-import { Button } from "@/components/ui/button"
-
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className="mb-4 text-2xl font-bold">Hello World</h1>
+    <main className="relative h-screen w-full bg-black bg-dot-pattern flex items-center justify-center overflow-hidden">
+      <div className="absolute inset-0 bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] pointer-events-none" />
       
-      <Button variant="default">Click me</Button>
-      <Button variant="outline">Secondary Action</Button>
     </main>
-  )
+  );
 }
