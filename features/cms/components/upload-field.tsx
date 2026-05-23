@@ -92,7 +92,7 @@ export function UploadField({
           <div className="flex items-center gap-3">
             {isImage && preview ? (
               <div className="relative size-16 border bg-muted">
-                <Image alt="" className="object-cover" fill src={preview} />
+                <Image alt="" className="object-cover" fill src={preview} unoptimized />
               </div>
             ) : (
               <div className="flex size-16 items-center justify-center border bg-muted">

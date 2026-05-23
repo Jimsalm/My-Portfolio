@@ -145,7 +145,7 @@ export function ProjectsListPage() {
                   <td className="p-3">
                     <div className="relative size-12 border bg-muted">
                       {project.thumbnail?.url ? (
-                        <Image alt="" className="object-cover" fill src={project.thumbnail.url} />
+                        <Image alt="" className="object-cover" fill src={project.thumbnail.url} unoptimized />
                       ) : null}
                     </div>
                   </td>

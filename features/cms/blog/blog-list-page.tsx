@@ -125,7 +125,7 @@ export function BlogListPage() {
                   <td className="p-3">
                     <div className="relative size-12 border bg-muted">
                       {post.coverImage?.url ? (
-                        <Image alt="" className="object-cover" fill src={post.coverImage.url} />
+                        <Image alt="" className="object-cover" fill src={post.coverImage.url} unoptimized />
                       ) : null}
                     </div>
                   </td>

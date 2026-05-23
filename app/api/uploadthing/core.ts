@@ -28,7 +28,7 @@ export const uploadRouter = {
   blogCover: upload({
     image: {
       maxFileCount: 1,
-      maxFileSize: "4MB",
+      maxFileSize: "16MB",
     },
   })
     .middleware(auth)
@@ -36,7 +36,7 @@ export const uploadRouter = {
   profilePhoto: upload({
     image: {
       maxFileCount: 1,
-      maxFileSize: "4MB",
+      maxFileSize: "16MB",
     },
   })
     .middleware(auth)
@@ -44,7 +44,7 @@ export const uploadRouter = {
   projectThumbnail: upload({
     image: {
       maxFileCount: 1,
-      maxFileSize: "4MB",
+      maxFileSize: "16MB",
     },
   })
     .middleware(auth)
@@ -52,7 +52,7 @@ export const uploadRouter = {
   resumePdf: upload({
     pdf: {
       maxFileCount: 1,
-      maxFileSize: "8MB",
+      maxFileSize: "16MB",
     },
   })
     .middleware(auth)
