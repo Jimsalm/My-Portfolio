@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { MatrixRainBackground } from "@/features/portfolio/components/matrix-rain-background";
 import { usePublicAbout } from "@/features/portfolio/hooks/use-public-data";
 import { getProfileHandle, getProfileName } from "@/features/portfolio/lib/utils";
 import type { PublicAbout } from "@/features/portfolio/types";
@@ -27,9 +28,9 @@ export function PortfolioShell({
   const profileName = getProfileName(about);
 
   return (
-    <div className="terminal-theme min-h-screen bg-background text-foreground">
-      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(to_bottom,transparent_0,transparent_23px,var(--border)_24px),linear-gradient(to_right,transparent_0,transparent_23px,var(--border)_24px)] bg-[length:24px_24px] opacity-[0.08]" />
-      <header className="fixed inset-x-0 top-0 z-40 border-b bg-background/95 font-mono backdrop-blur">
+    <div className="terminal-theme relative min-h-screen overflow-x-hidden bg-background text-foreground">
+      <MatrixRainBackground />
+      <header className="fixed inset-x-0 top-0 z-40 border-b bg-background/85 font-mono backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5">
           <Link className="text-sm font-semibold tracking-tight" href="/" onClick={() => setIsOpen(false)}>
             {profileHandle}:~$
@@ -88,7 +89,7 @@ export function PortfolioShell({
         </div>
       </header>
 
-      <main className="relative pt-16">{children}</main>
+      <main className="relative z-10 pt-16">{children}</main>
       <Footer profileHandle={profileHandle} profileName={profileName} />
     </div>
   );
@@ -127,7 +128,7 @@ function Footer({
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative border-t bg-background font-mono">
+    <footer className="relative z-10 border-t bg-background/85 font-mono backdrop-blur">
       <div className="mx-auto grid max-w-6xl gap-8 px-5 py-10 md:grid-cols-[1fr_auto] md:items-end">
         <div>
           <p className="font-semibold tracking-tight">{profileHandle}:~/exit$</p>
