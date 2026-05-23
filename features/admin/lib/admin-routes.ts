@@ -1,8 +1,8 @@
 export const adminRoutes = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/projects", label: "Projects" },
-  { href: "/admin/blog-posts", label: "Blog Posts" },
-  { href: "/admin/about-resume", label: "About/Resume" },
+  { href: "/admin/blog", label: "Blog Posts" },
+  { href: "/admin/about", label: "About/Resume" },
   { href: "/admin/settings", label: "Settings" },
 ] as const;
 

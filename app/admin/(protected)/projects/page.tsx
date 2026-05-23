@@ -1,10 +1,5 @@
-import { AdminPlaceholderPage } from "@/features/admin/components/admin-placeholder-page";
+import { ProjectsListPage } from "@/features/cms/projects/projects-list-page";
 
 export default function AdminProjectsPage() {
-  return (
-    <AdminPlaceholderPage
-      description="Create, edit, and organize portfolio projects from this section."
-      title="Projects"
-    />
-  );
+  return <ProjectsListPage />;
 }

@@ -1,10 +1,5 @@
-import { AdminPlaceholderPage } from "@/features/admin/components/admin-placeholder-page";
+import { redirect } from "next/navigation";
 
 export default function AdminBlogPostsPage() {
-  return (
-    <AdminPlaceholderPage
-      description="Draft, review, and publish portfolio blog posts from this section."
-      title="Blog Posts"
-    />
-  );
+  redirect("/admin/blog");
 }

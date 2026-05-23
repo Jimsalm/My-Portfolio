@@ -1,4 +1,5 @@
 import { query } from "./_generated/server";
+import { adminApiToken, assertAdminApiToken } from "./cmsValidators";
 
 type RecentItem = {
   id: string;
@@ -16,8 +17,10 @@ type DashboardOverview = {
 };
 
 export const getOverview = query({
-  args: {},
-  handler: async (ctx): Promise<DashboardOverview> => {
+  args: { adminApiToken },
+  handler: async (ctx, args): Promise<DashboardOverview> => {
+    assertAdminApiToken(args.adminApiToken);
+
     const [
       projects,
       blogPosts,
@@ -52,7 +55,7 @@ export const getOverview = query({
       title: post.title,
       slug: post.slug,
       updatedAt: post.updatedAt,
-      }));
+    }));
 
     return {
       totalProjects: projects.length,

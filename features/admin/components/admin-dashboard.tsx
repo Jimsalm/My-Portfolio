@@ -1,20 +1,31 @@
+"use client";
+
 import Link from "next/link";
 import type { ComponentType } from "react";
 import { BookOpenText, BriefcaseBusiness, FileUser, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDashboardOverview } from "@/features/cms/hooks/use-dashboard";
+import { type DashboardOverviewData } from "@/features/cms/schemas";
 import { formatDate } from "@/features/admin/lib/admin-profile";
-import {
-  getDashboardOverview,
-  type DashboardOverviewData,
-  type DashboardRecentItem,
-} from "@/features/admin/server/dashboard-data";
 
-export async function AdminDashboard() {
-  const overview = await getDashboardOverview();
+export function AdminDashboard() {
+  const { data, isError, isLoading } = useDashboardOverview();
 
-  return <AdminDashboardContent overview={overview} />;
+  if (isLoading) {
+    return <AdminDashboardSkeleton />;
+  }
+
+  if (isError || !data) {
+    return (
+      <section className="border border-dashed p-6 text-sm text-muted-foreground">
+        Dashboard data could not be loaded.
+      </section>
+    );
+  }
+
+  return <AdminDashboardContent overview={data} />;
 }
 
 export function AdminDashboardSkeleton() {
@@ -61,13 +72,13 @@ function AdminDashboardContent({
         </div>
         <div className="flex flex-wrap gap-2">
           <Button asChild className="rounded-none">
-            <Link href="/admin/projects">
+            <Link href="/admin/projects/new">
               <Plus aria-hidden="true" className="size-4" />
               Add Project
             </Link>
           </Button>
           <Button asChild className="rounded-none" variant="outline">
-            <Link href="/admin/blog-posts">
+            <Link href="/admin/blog/new">
               <Plus aria-hidden="true" className="size-4" />
               Add Blog Post
             </Link>
@@ -102,7 +113,7 @@ function AdminDashboardContent({
         />
         <RecentList
           emptyLabel="No blog posts yet."
-          href="/admin/blog-posts"
+          href="/admin/blog"
           items={overview.recentBlogPosts}
           title="Recent Blog Posts"
         />
@@ -132,7 +143,7 @@ function StatCard({ icon: Icon, label, value }: StatCardProps) {
 type RecentListProps = {
   emptyLabel: string;
   href: string;
-  items: DashboardRecentItem[];
+  items: DashboardOverviewData["recentProjects"];
   title: string;
 };
 

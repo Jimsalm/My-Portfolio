@@ -2,6 +2,9 @@
 
 import { ThemeProvider } from "next-themes";
 
+import { Toaster } from "@/components/ui/sonner";
+import { QueryProvider } from "@/features/query/query-provider";
+
 export function Providers({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <ThemeProvider
@@ -10,7 +13,8 @@ export function Providers({ children }: Readonly<{ children: React.ReactNode }>)
       disableTransitionOnChange
       enableSystem
     >
-      {children}
+      <QueryProvider>{children}</QueryProvider>
+      <Toaster position="top-right" />
     </ThemeProvider>
   );
 }

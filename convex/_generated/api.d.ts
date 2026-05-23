@@ -8,8 +8,12 @@
  * @module
  */
 
+import type * as about from "../about.js";
 import type * as admin from "../admin.js";
+import type * as blog from "../blog.js";
+import type * as cmsValidators from "../cmsValidators.js";
 import type * as dashboard from "../dashboard.js";
+import type * as projects from "../projects.js";
 
 import type {
   ApiFromModules,
@@ -18,8 +22,12 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  about: typeof about;
   admin: typeof admin;
+  blog: typeof blog;
+  cmsValidators: typeof cmsValidators;
   dashboard: typeof dashboard;
+  projects: typeof projects;
 }>;
 
 /**
