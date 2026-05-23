@@ -1,0 +1,153 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
+import { useState } from "react";
+
+import { cn } from "@/lib/utils";
+import { usePublicAbout } from "@/features/portfolio/hooks/use-public-data";
+import { getProfileHandle, getProfileName } from "@/features/portfolio/lib/utils";
+import type { PublicAbout } from "@/features/portfolio/types";
+
+const navItems = [
+  { href: "/projects", index: "01", label: "WORK" },
+  { href: "/blog", index: "02", label: "LOG" },
+  { href: "/about", index: "03", label: "WHOAMI" },
+];
+
+export function PortfolioShell({
+  children,
+  initialAbout,
+}: Readonly<{ children: React.ReactNode; initialAbout: PublicAbout | null }>) {
+  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+  const { data: about = initialAbout } = usePublicAbout(initialAbout);
+  const profileHandle = getProfileHandle(about);
+  const profileName = getProfileName(about);
+
+  return (
+    <div className="terminal-theme min-h-screen bg-background text-foreground">
+      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(to_bottom,transparent_0,transparent_23px,var(--border)_24px),linear-gradient(to_right,transparent_0,transparent_23px,var(--border)_24px)] bg-[length:24px_24px] opacity-[0.08]" />
+      <header className="fixed inset-x-0 top-0 z-40 border-b bg-background/95 font-mono backdrop-blur">
+        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5">
+          <Link className="text-sm font-semibold tracking-tight" href="/" onClick={() => setIsOpen(false)}>
+            {profileHandle}:~$
+          </Link>
+
+          <nav className="hidden items-center gap-8 text-sm md:flex">
+            {navItems.map((item) => (
+              <NavLink
+                active={pathname === item.href || pathname.startsWith(`${item.href}/`)}
+                href={item.href}
+                key={item.href}
+              >
+                <span className="text-muted-foreground">{item.index}</span>
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+
+          <button
+            aria-expanded={isOpen}
+            aria-label="Toggle navigation"
+            className="inline-flex size-10 items-center justify-center border md:hidden"
+            onClick={() => setIsOpen((current) => !current)}
+            type="button"
+          >
+            {isOpen ? <X aria-hidden="true" className="size-4" /> : <Menu aria-hidden="true" className="size-4" />}
+          </button>
+        </div>
+
+        <div
+          className={cn(
+            "grid border-t transition-[grid-template-rows] duration-300 md:hidden",
+            isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+          )}
+        >
+          <nav className="overflow-hidden font-mono">
+            <div className="mx-auto flex max-w-6xl flex-col px-5 py-3 text-sm">
+              {navItems.map((item) => (
+                <Link
+                  className={cn(
+                    "border-b py-4",
+                    pathname === item.href || pathname.startsWith(`${item.href}/`)
+                      ? "font-semibold"
+                      : "text-muted-foreground",
+                  )}
+                  href={item.href}
+                  key={item.href}
+                  onClick={() => setIsOpen(false)}
+                >
+                  <span className="mr-3 text-muted-foreground">{item.index}</span>
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </nav>
+        </div>
+      </header>
+
+      <main className="relative pt-16">{children}</main>
+      <Footer profileHandle={profileHandle} profileName={profileName} />
+    </div>
+  );
+}
+
+function NavLink({
+  active,
+  children,
+  href,
+}: {
+  active: boolean;
+  children: React.ReactNode;
+  href: string;
+}) {
+  return (
+    <Link
+      className={cn(
+        "relative flex items-center gap-2 py-2 transition-colors hover:text-foreground",
+        active ? "font-semibold text-foreground" : "text-muted-foreground",
+      )}
+      href={href}
+    >
+      {children}
+      {active ? <span className="absolute inset-x-0 -bottom-px h-px bg-foreground" /> : null}
+    </Link>
+  );
+}
+
+function Footer({
+  profileHandle,
+  profileName,
+}: {
+  profileHandle: string;
+  profileName: string;
+}) {
+  const year = new Date().getFullYear();
+
+  return (
+    <footer className="relative border-t bg-background font-mono">
+      <div className="mx-auto grid max-w-6xl gap-8 px-5 py-10 md:grid-cols-[1fr_auto] md:items-end">
+        <div>
+          <p className="font-semibold tracking-tight">{profileHandle}:~/exit$</p>
+          <p className="mt-2 max-w-md text-sm text-muted-foreground">
+            {profileName} · Built with Next.js + Convex. Session persisted until {year}.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-5 text-sm text-muted-foreground">
+          <Link className="hover:text-foreground" href="/projects">
+            Projects
+          </Link>
+          <Link className="hover:text-foreground" href="/blog">
+            Blog
+          </Link>
+          <Link className="hover:text-foreground" href="/about">
+            About
+          </Link>
+          <span>© {year}</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
