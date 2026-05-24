@@ -34,6 +34,7 @@ import {
   getAdminDisplayName,
   getInitials,
 } from "@/features/admin/lib/admin-profile";
+import { MatrixRainBackground } from "@/features/portfolio/components/matrix-rain-background";
 import { cn } from "@/lib/utils";
 
 type AdminShellProps = {
@@ -62,13 +63,14 @@ export function AdminShell({
   const initials = getInitials(adminName);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r bg-background md:flex md:flex-col">
+    <div className="terminal-theme admin-terminal relative min-h-screen overflow-x-hidden bg-background font-mono text-foreground">
+      <MatrixRainBackground />
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r bg-background/90 backdrop-blur md:flex md:flex-col">
         <SidebarContent pathname={pathname} />
       </aside>
 
-      <div className="flex min-h-screen flex-col md:pl-64">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b bg-background px-4 md:px-6">
+      <div className="relative z-10 flex min-h-screen flex-col md:pl-64">
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b bg-background/90 px-4 backdrop-blur md:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <Sheet>
               <SheetTrigger asChild>
@@ -83,31 +85,32 @@ export function AdminShell({
                 </Button>
               </SheetTrigger>
               <SheetContent
-                className="w-72 rounded-none p-0 sm:max-w-none"
+                className="terminal-theme admin-terminal w-72 rounded-none border-r bg-background p-0 font-mono sm:max-w-none"
                 side="left"
               >
                 <SheetHeader className="border-b px-4 py-4 text-left">
-                  <SheetTitle>Portfolio Admin</SheetTitle>
-                  <SheetDescription>Manage portfolio content</SheetDescription>
+                  <SheetTitle className="font-mono">portfolio-admin:~$</SheetTitle>
+                  <SheetDescription className="font-mono">manage content shell</SheetDescription>
                 </SheetHeader>
                 <SidebarContent pathname={pathname} closeOnNavigate />
               </SheetContent>
             </Sheet>
 
             <div className="min-w-0">
-              <h1 className="truncate text-lg font-semibold tracking-normal md:text-xl">
-                {pageTitle}
-              </h1>
-              <p className="hidden text-xs text-muted-foreground sm:block">
-                {currentDateLabel}
+              <p className="hidden text-[11px] uppercase tracking-[0.18em] text-muted-foreground sm:block">
+                $ pwd
               </p>
+              <h1 className="truncate text-base font-semibold tracking-tight md:text-lg">
+                /admin/{pageTitle.toLowerCase().replace(/[\s/]+/g, "-")}
+              </h1>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block">
-              <p className="text-sm font-medium leading-none">{adminName}</p>
-              <p className="mt-1 text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground">{currentDateLabel}</p>
+              <p className="mt-1 text-sm font-semibold leading-none">{adminName}</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">
                 {session.user?.email}
               </p>
             </div>
@@ -122,8 +125,9 @@ export function AdminShell({
         <main className="flex-1 px-4 py-5 md:px-6 md:py-6">
           <nav
             aria-label="Breadcrumb"
-            className="mb-5 flex flex-wrap items-center gap-2 text-sm text-muted-foreground"
+            className="mb-5 flex flex-wrap items-center gap-2 border bg-background/80 px-3 py-2 text-xs text-muted-foreground"
           >
+            <span className="text-foreground">$ cd</span>
             {breadcrumbs.map((crumb, index) => {
               const isLast = index === breadcrumbs.length - 1;
 
@@ -134,10 +138,10 @@ export function AdminShell({
                 >
                   {index > 0 ? <span aria-hidden="true">/</span> : null}
                   {isLast ? (
-                    <span className="text-foreground">{crumb.label}</span>
+                    <span className="text-foreground">{crumb.label.toLowerCase()}</span>
                   ) : (
                     <Link className="transition-colors hover:text-foreground" href={crumb.href}>
-                      {crumb.label}
+                      {crumb.label.toLowerCase()}
                     </Link>
                   )}
                 </div>
@@ -161,13 +165,13 @@ function SidebarContent({ closeOnNavigate = false, pathname }: SidebarContentPro
     <>
       <div className="border-b p-5">
         <Link className="block" href="/admin">
-          <p className="text-base font-semibold tracking-normal">Portfolio</p>
-          <p className="mt-1 text-xs text-muted-foreground">Admin Panel</p>
+          <p className="text-base font-semibold tracking-tight">portfolio-admin:~$</p>
+          <p className="mt-1 text-xs text-muted-foreground">authenticated content shell</p>
         </Link>
       </div>
 
       <nav className="flex-1 space-y-1 p-3" aria-label="Admin navigation">
-        {adminRoutes.map((item) => {
+        {adminRoutes.map((item, index) => {
           const Icon = navIcons[item.label];
           const isActive =
             item.href === "/admin"
@@ -176,15 +180,18 @@ function SidebarContent({ closeOnNavigate = false, pathname }: SidebarContentPro
           const link = (
             <Link
               className={cn(
-                "flex h-10 items-center gap-3 border px-3 text-sm transition-colors",
+                "group flex h-10 items-center gap-3 border px-3 text-sm transition-colors",
                 isActive
                   ? "border-foreground bg-foreground text-background"
-                  : "border-transparent text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground",
+                  : "border-transparent text-muted-foreground hover:border-border hover:bg-muted/60 hover:text-foreground",
               )}
               href={item.href}
             >
+              <span className="w-5 text-[10px] text-muted-foreground group-hover:text-foreground">
+                {String(index + 1).padStart(2, "0")}
+              </span>
               <Icon aria-hidden="true" className="size-4" />
-              <span>{item.label}</span>
+              <span>./{item.label.toLowerCase().replace(/[\s/]+/g, "-")}</span>
             </Link>
           );
 
@@ -201,6 +208,9 @@ function SidebarContent({ closeOnNavigate = false, pathname }: SidebarContentPro
       <div className="p-3">
         <Separator />
         <div className="pt-3">
+          <p className="mb-2 px-1 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            $ exit session
+          </p>
           <AdminLogoutButton className="w-full justify-start rounded-none" />
         </div>
       </div>

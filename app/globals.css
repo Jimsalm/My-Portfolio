@@ -139,6 +139,61 @@
   --ring: oklch(0.7 0 0);
 }
 
+.admin-terminal {
+  background-image:
+    linear-gradient(to bottom, oklch(1 0 0 / 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 50% 0%, oklch(1 0 0 / 0.08), transparent 38rem);
+  background-size: 100% 4px, 100% 100%;
+}
+
+.admin-terminal [data-slot="button"],
+.admin-terminal [data-slot="input"],
+.admin-terminal [data-slot="textarea"],
+.admin-terminal [data-slot="select-trigger"],
+.admin-terminal [data-slot="select-content"],
+.admin-terminal [data-slot="alert-dialog-content"],
+.admin-terminal [data-slot="sheet-content"],
+.admin-terminal [data-slot="badge"] {
+  border-radius: 0;
+  font-family: var(--font-mono);
+}
+
+.admin-terminal [data-slot="input"],
+.admin-terminal [data-slot="textarea"],
+.admin-terminal [data-slot="select-trigger"] {
+  min-height: 2.75rem;
+  background: color-mix(in oklch, var(--background) 86%, var(--foreground) 14%);
+}
+
+.admin-terminal [data-slot="textarea"] {
+  line-height: 1.65;
+}
+
+.admin-terminal [data-slot="button"] {
+  min-height: 2.5rem;
+  letter-spacing: 0.01em;
+}
+
+.admin-terminal [data-slot="label"],
+.admin-terminal label {
+  font-family: var(--font-mono);
+  letter-spacing: 0.01em;
+}
+
+.admin-terminal table {
+  font-family: var(--font-mono);
+}
+
+.admin-terminal thead {
+  text-transform: lowercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-terminal [data-slot="skeleton"] {
+  border-radius: 0;
+  background: color-mix(in oklch, var(--foreground) 12%, transparent);
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;

@@ -47,12 +47,12 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
     <form className="grid gap-5" onSubmit={handleSubmit}>
       <div className="grid gap-2">
         <label className="text-sm font-medium text-foreground" htmlFor="email">
-          Email
+          email
         </label>
         <input
           autoComplete="email"
           autoFocus
-          className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-3 focus:ring-ring/20"
+          className="h-11 rounded-none border border-input bg-background/80 px-3 font-mono text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-3 focus:ring-ring/20"
           id="email"
           name="email"
           placeholder="admin@example.com"
@@ -62,15 +62,12 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
       </div>
 
       <div className="grid gap-2">
-        <label
-          className="text-sm font-medium text-foreground"
-          htmlFor="password"
-        >
-          Password
+        <label className="text-sm font-medium text-foreground" htmlFor="password">
+          password
         </label>
         <input
           autoComplete="current-password"
-          className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-3 focus:ring-ring/20"
+          className="h-11 rounded-none border border-input bg-background/80 px-3 font-mono text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-3 focus:ring-ring/20"
           id="password"
           name="password"
           placeholder="Enter your password"
@@ -80,18 +77,18 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
       </div>
 
       {error ? (
-        <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <p className="rounded-none border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {error}
         </p>
       ) : null}
 
-      <Button className="w-full" disabled={isSubmitting} type="submit">
+      <Button className="h-11 w-full rounded-none" disabled={isSubmitting} type="submit">
         {isSubmitting ? (
           <Loader2 className="animate-spin" />
         ) : (
           <LogIn aria-hidden="true" />
         )}
-        Sign in
+        ssh --login
       </Button>
     </form>
   );

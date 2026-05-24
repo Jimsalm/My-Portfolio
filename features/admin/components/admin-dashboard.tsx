@@ -19,8 +19,8 @@ export function AdminDashboard() {
 
   if (isError || !data) {
     return (
-      <section className="border border-dashed p-6 text-sm text-muted-foreground">
-        Dashboard data could not be loaded.
+      <section className="border border-dashed bg-background/80 p-6 text-sm text-muted-foreground">
+        <span className="text-foreground">error:</span> dashboard data could not be loaded.
       </section>
     );
   }
@@ -63,24 +63,24 @@ function AdminDashboardContent({
 }) {
   return (
     <div className="space-y-6">
-      <div className="flex flex-col justify-between gap-4 border bg-background p-5 md:flex-row md:items-center">
+      <div className="flex flex-col justify-between gap-4 border bg-background/80 p-5 md:flex-row md:items-center">
         <div>
-          <p className="text-sm text-muted-foreground">Overview</p>
-          <h2 className="mt-1 text-2xl font-semibold tracking-normal">
-            Portfolio Control Center
+          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">$ admin --overview</p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight">
+            control-center
           </h2>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button asChild className="rounded-none">
             <Link href="/admin/projects/new">
               <Plus aria-hidden="true" className="size-4" />
-              Add Project
+              touch project
             </Link>
           </Button>
           <Button asChild className="rounded-none" variant="outline">
             <Link href="/admin/blog/new">
               <Plus aria-hidden="true" className="size-4" />
-              Add Blog Post
+              touch post
             </Link>
           </Button>
         </div>
@@ -130,12 +130,12 @@ type StatCardProps = {
 
 function StatCard({ icon: Icon, label, value }: StatCardProps) {
   return (
-    <article className="border bg-background p-5">
+    <article className="border bg-background/80 p-5">
       <div className="flex items-center justify-between gap-4">
-        <p className="text-sm text-muted-foreground">{label}</p>
+        <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{label}</p>
         <Icon aria-hidden="true" className="size-4 text-muted-foreground" />
       </div>
-      <p className="mt-5 text-3xl font-semibold tracking-normal">{value}</p>
+      <p className="mt-5 text-3xl font-semibold tracking-tight">{value}</p>
     </article>
   );
 }
@@ -149,11 +149,11 @@ type RecentListProps = {
 
 function RecentList({ emptyLabel, href, items, title }: RecentListProps) {
   return (
-    <section className="border bg-background p-5">
+    <section className="border bg-background/80 p-5">
       <div className="flex items-center justify-between gap-4">
-        <h3 className="text-base font-semibold tracking-normal">{title}</h3>
+        <h3 className="text-base font-semibold tracking-tight">tail -f {title.toLowerCase()}</h3>
         <Link className="text-sm text-muted-foreground hover:text-foreground" href={href}>
-          View all
+          view --all
         </Link>
       </div>
 
@@ -175,7 +175,7 @@ function RecentList({ emptyLabel, href, items, title }: RecentListProps) {
         </div>
       ) : (
         <div className="mt-4 border border-dashed p-5 text-sm text-muted-foreground">
-          {emptyLabel}
+          <span className="text-foreground">empty:</span> {emptyLabel}
         </div>
       )}
     </section>
