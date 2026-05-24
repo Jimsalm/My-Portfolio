@@ -15,6 +15,8 @@ import {
 } from "@/features/cms/schemas";
 import { queryKeys } from "@/features/cms/query-keys";
 
+const publicPortfolioQueryKey = ["portfolio"] as const;
+
 export function useProjects() {
   return useQuery({
     queryFn: () => apiRequest<Project[]>({ method: "GET", url: "/api/admin/projects" }),
@@ -45,6 +47,7 @@ export function useCreateProject() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.projects });
       queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
+      queryClient.invalidateQueries({ queryKey: publicPortfolioQueryKey });
     },
   });
 }
@@ -67,6 +70,7 @@ export function useUpdateProject(id: string) {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.projects });
       queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
+      queryClient.invalidateQueries({ queryKey: publicPortfolioQueryKey });
     },
   });
 }
@@ -93,6 +97,7 @@ export function useDeleteProject() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.projects });
       queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
+      queryClient.invalidateQueries({ queryKey: publicPortfolioQueryKey });
     },
   });
 }
@@ -123,6 +128,7 @@ export function useBulkDeleteProjects() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.projects });
       queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
+      queryClient.invalidateQueries({ queryKey: publicPortfolioQueryKey });
     },
   });
 }
@@ -154,6 +160,7 @@ export function useToggleProjectStatus() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.projects });
       queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
+      queryClient.invalidateQueries({ queryKey: publicPortfolioQueryKey });
     },
   });
 }

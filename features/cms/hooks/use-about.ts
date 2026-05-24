@@ -7,6 +7,8 @@ import { apiRequest } from "@/lib/axios";
 import { queryKeys } from "@/features/cms/query-keys";
 import { type About, type AboutFormValues } from "@/features/cms/schemas";
 
+const publicPortfolioQueryKey = ["portfolio"] as const;
+
 export function useAbout() {
   return useQuery({
     queryFn: () => apiRequest<About>({ method: "GET", url: "/api/admin/about" }),
@@ -28,6 +30,7 @@ export function useUpdateAbout() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.about });
       queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
+      queryClient.invalidateQueries({ queryKey: publicPortfolioQueryKey });
     },
   });
 }

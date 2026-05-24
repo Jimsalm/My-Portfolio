@@ -15,6 +15,8 @@ import {
 } from "@/features/cms/schemas";
 import { queryKeys } from "@/features/cms/query-keys";
 
+const publicPortfolioQueryKey = ["portfolio"] as const;
+
 export function useBlogPosts() {
   return useQuery({
     queryFn: () => apiRequest<BlogPost[]>({ method: "GET", url: "/api/admin/blog" }),
@@ -45,6 +47,7 @@ export function useCreateBlogPost() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.blogPosts });
       queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
+      queryClient.invalidateQueries({ queryKey: publicPortfolioQueryKey });
     },
   });
 }
@@ -67,6 +70,7 @@ export function useUpdateBlogPost(id: string) {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.blogPosts });
       queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
+      queryClient.invalidateQueries({ queryKey: publicPortfolioQueryKey });
     },
   });
 }
@@ -93,6 +97,7 @@ export function useDeleteBlogPost() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.blogPosts });
       queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
+      queryClient.invalidateQueries({ queryKey: publicPortfolioQueryKey });
     },
   });
 }
@@ -122,6 +127,7 @@ export function useToggleBlogPostStatus() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.blogPosts });
       queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
+      queryClient.invalidateQueries({ queryKey: publicPortfolioQueryKey });
     },
   });
 }
