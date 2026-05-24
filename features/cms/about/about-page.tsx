@@ -1,9 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { GripVertical, Plus, Trash2 } from "lucide-react";
+import { GripVertical, Loader2, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Controller, useFieldArray, useForm, type Resolver } from "react-hook-form";
+import { Controller, useFieldArray, useForm, useWatch, type Resolver } from "react-hook-form";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -35,6 +36,8 @@ export function AboutPage() {
   const skillFields = useFieldArray({ control: form.control, name: "skills" });
   const experienceFields = useFieldArray({ control: form.control, name: "experience" });
   const educationFields = useFieldArray({ control: form.control, name: "education" });
+  const shortBio = useWatch({ control: form.control, name: "shortBio" });
+  const longBio = useWatch({ control: form.control, name: "longBio" });
 
   useUnsavedChangesWarning(form.formState.isDirty);
   useAutoSaveDraft(form, "about-draft");
@@ -57,18 +60,25 @@ export function AboutPage() {
     });
   }
 
+  function onInvalid() {
+    toast.error("Fix the highlighted fields before saving.");
+    const firstError = document.querySelector("[aria-invalid='true']");
+    firstError?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
   if (isLoading) {
     return <Skeleton className="h-96 rounded-none" />;
   }
 
   return (
-    <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
+    <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
       <div className="flex items-center justify-between border p-4">
         <div>
           <h2 className="text-xl font-semibold tracking-normal">About / Resume</h2>
           <p className="text-sm text-muted-foreground">Profile, resume, skills, experience, and education.</p>
         </div>
         <Button className="rounded-none" disabled={updateAbout.isPending}>
+          {updateAbout.isPending ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : null}
           Save
         </Button>
       </div>
@@ -101,37 +111,37 @@ export function AboutPage() {
           )}
         />
         <Field label="Full name" error={form.formState.errors.fullName?.message}>
-          <Input className="rounded-none" {...form.register("fullName")} />
+          <Input aria-invalid={Boolean(form.formState.errors.fullName)} className="rounded-none" {...form.register("fullName")} />
         </Field>
         <Field label="Title / Role" error={form.formState.errors.role?.message}>
-          <Input className="rounded-none" {...form.register("role")} />
+          <Input aria-invalid={Boolean(form.formState.errors.role)} className="rounded-none" {...form.register("role")} />
         </Field>
         <Field label="Email" error={form.formState.errors.email?.message}>
-          <Input className="rounded-none" {...form.register("email")} />
+          <Input aria-invalid={Boolean(form.formState.errors.email)} className="rounded-none" {...form.register("email")} />
         </Field>
         <Field label="Location" error={form.formState.errors.location?.message}>
-          <Input className="rounded-none" {...form.register("location")} />
+          <Input aria-invalid={Boolean(form.formState.errors.location)} className="rounded-none" {...form.register("location")} />
         </Field>
-        <Field label="Short bio" error={form.formState.errors.shortBio?.message}>
-          <Textarea className="rounded-none" {...form.register("shortBio")} />
+        <Field count={shortBio?.length ?? 0} label="Short bio" error={form.formState.errors.shortBio?.message}>
+          <Textarea aria-invalid={Boolean(form.formState.errors.shortBio)} className="rounded-none" {...form.register("shortBio")} />
         </Field>
-        <Field label="Long bio / About me" error={form.formState.errors.longBio?.message}>
-          <Textarea className="min-h-44 rounded-none font-mono" {...form.register("longBio")} />
+        <Field count={longBio?.length ?? 0} label="Long bio / About me" error={form.formState.errors.longBio?.message}>
+          <Textarea aria-invalid={Boolean(form.formState.errors.longBio)} className="min-h-44 rounded-none font-mono" {...form.register("longBio")} />
         </Field>
       </section>
 
       <section className="grid gap-5 border p-4 lg:grid-cols-2">
-        <Field label="GitHub URL">
-          <Input className="rounded-none" {...form.register("socialLinks.github")} />
+        <Field label="GitHub URL" error={form.formState.errors.socialLinks?.github?.message}>
+          <Input aria-invalid={Boolean(form.formState.errors.socialLinks?.github)} className="rounded-none" {...form.register("socialLinks.github")} />
         </Field>
-        <Field label="LinkedIn URL">
-          <Input className="rounded-none" {...form.register("socialLinks.linkedin")} />
+        <Field label="LinkedIn URL" error={form.formState.errors.socialLinks?.linkedin?.message}>
+          <Input aria-invalid={Boolean(form.formState.errors.socialLinks?.linkedin)} className="rounded-none" {...form.register("socialLinks.linkedin")} />
         </Field>
-        <Field label="Twitter/X URL">
-          <Input className="rounded-none" {...form.register("socialLinks.twitter")} />
+        <Field label="Twitter/X URL" error={form.formState.errors.socialLinks?.twitter?.message}>
+          <Input aria-invalid={Boolean(form.formState.errors.socialLinks?.twitter)} className="rounded-none" {...form.register("socialLinks.twitter")} />
         </Field>
-        <Field label="Website URL">
-          <Input className="rounded-none" {...form.register("socialLinks.website")} />
+        <Field label="Website URL" error={form.formState.errors.socialLinks?.website?.message}>
+          <Input aria-invalid={Boolean(form.formState.errors.socialLinks?.website)} className="rounded-none" {...form.register("socialLinks.website")} />
         </Field>
       </section>
 
@@ -224,11 +234,50 @@ export function AboutPage() {
         </div>
         {experienceFields.fields.map((field, index) => (
           <div className="grid gap-3 border p-3 lg:grid-cols-2" key={field.id}>
-            <Input className="rounded-none" placeholder="Company" {...form.register(`experience.${index}.company`)} />
-            <Input className="rounded-none" placeholder="Role" {...form.register(`experience.${index}.role`)} />
-            <Input className="rounded-none" placeholder="Start date" {...form.register(`experience.${index}.startDate`)} />
-            <Input className="rounded-none" placeholder="End date" {...form.register(`experience.${index}.endDate`)} />
-            <Textarea className="rounded-none lg:col-span-2" placeholder="Description" {...form.register(`experience.${index}.description`)} />
+            <Field label="Company" error={form.formState.errors.experience?.[index]?.company?.message}>
+              <Input
+                aria-invalid={Boolean(form.formState.errors.experience?.[index]?.company)}
+                className="rounded-none"
+                placeholder="Company"
+                {...form.register(`experience.${index}.company`)}
+              />
+            </Field>
+            <Field label="Role" error={form.formState.errors.experience?.[index]?.role?.message}>
+              <Input
+                aria-invalid={Boolean(form.formState.errors.experience?.[index]?.role)}
+                className="rounded-none"
+                placeholder="Role"
+                {...form.register(`experience.${index}.role`)}
+              />
+            </Field>
+            <Field label="Start date" error={form.formState.errors.experience?.[index]?.startDate?.message}>
+              <Input
+                aria-invalid={Boolean(form.formState.errors.experience?.[index]?.startDate)}
+                className="rounded-none"
+                placeholder="December 2025"
+                {...form.register(`experience.${index}.startDate`)}
+              />
+            </Field>
+            <Field label="End date" error={form.formState.errors.experience?.[index]?.endDate?.message}>
+              <Input
+                aria-invalid={Boolean(form.formState.errors.experience?.[index]?.endDate)}
+                className="rounded-none"
+                placeholder="March 2026"
+                {...form.register(`experience.${index}.endDate`)}
+              />
+            </Field>
+            <Field
+              className="lg:col-span-2"
+              label="Description"
+              error={form.formState.errors.experience?.[index]?.description?.message}
+            >
+              <Textarea
+                aria-invalid={Boolean(form.formState.errors.experience?.[index]?.description)}
+                className="rounded-none"
+                placeholder="Description"
+                {...form.register(`experience.${index}.description`)}
+              />
+            </Field>
             <Controller
               control={form.control}
               name={`experience.${index}.current`}
@@ -268,9 +317,30 @@ export function AboutPage() {
         </div>
         {educationFields.fields.map((field, index) => (
           <div className="grid gap-3 border p-3 lg:grid-cols-[1fr_1fr_120px_auto]" key={field.id}>
-            <Input className="rounded-none" placeholder="School" {...form.register(`education.${index}.school`)} />
-            <Input className="rounded-none" placeholder="Degree" {...form.register(`education.${index}.degree`)} />
-            <Input className="rounded-none" placeholder="Year" {...form.register(`education.${index}.year`)} />
+            <Field label="School" error={form.formState.errors.education?.[index]?.school?.message}>
+              <Input
+                aria-invalid={Boolean(form.formState.errors.education?.[index]?.school)}
+                className="rounded-none"
+                placeholder="School"
+                {...form.register(`education.${index}.school`)}
+              />
+            </Field>
+            <Field label="Degree" error={form.formState.errors.education?.[index]?.degree?.message}>
+              <Input
+                aria-invalid={Boolean(form.formState.errors.education?.[index]?.degree)}
+                className="rounded-none"
+                placeholder="Degree"
+                {...form.register(`education.${index}.degree`)}
+              />
+            </Field>
+            <Field label="Year" error={form.formState.errors.education?.[index]?.year?.message}>
+              <Input
+                aria-invalid={Boolean(form.formState.errors.education?.[index]?.year)}
+                className="rounded-none"
+                placeholder="2026"
+                {...form.register(`education.${index}.year`)}
+              />
+            </Field>
             <Button className="rounded-none" onClick={() => educationFields.remove(index)} type="button" variant="outline">
               Remove
             </Button>
@@ -283,17 +353,22 @@ export function AboutPage() {
 
 function Field({
   children,
+  className,
+  count,
   error,
   label,
 }: {
   children: React.ReactNode;
+  className?: string;
+  count?: number;
   error?: string;
   label: string;
 }) {
   return (
-    <div className="space-y-2">
+    <div className={`space-y-2 ${className ?? ""}`}>
       <Label>{label}</Label>
       {children}
+      {typeof count === "number" ? <p className="text-xs text-muted-foreground">{count} characters</p> : null}
       {error ? <p className="text-xs text-destructive">{error}</p> : null}
     </div>
   );

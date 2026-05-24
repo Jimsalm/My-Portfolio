@@ -11,7 +11,18 @@ export type ApiResponse<T> = {
 
 export type ApiErrorResponse = {
   error: string;
+  status?: number;
 };
+
+export class ApiRequestError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "ApiRequestError";
+    this.status = status;
+  }
+}
 
 const baseURL =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
@@ -39,15 +50,23 @@ apiClient.interceptors.request.use(async (config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError<ApiErrorResponse>) => {
-    if (error.response?.status === 401 && typeof window !== "undefined") {
+    const status = error.response?.status ?? 500;
+    const message = error.response?.data?.error ?? error.message ?? "Request failed.";
+
+    if (status === 401 && typeof window !== "undefined") {
       window.location.assign("/admin/login");
     }
 
-    if (error.response?.status && error.response.status >= 500) {
-      toast.error(error.response.data?.error ?? "Something went wrong.");
+    if (status === 404) {
+      return Promise.reject(new ApiRequestError(message || "Not found.", status));
     }
 
-    return Promise.reject(error);
+    if (status >= 500) {
+      console.error(error);
+      toast.error(message || "Something went wrong.");
+    }
+
+    return Promise.reject(new ApiRequestError(message, status));
   },
 );
 

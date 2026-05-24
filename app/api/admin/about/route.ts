@@ -6,11 +6,18 @@ import {
   dataResponse,
   getAdminApiToken,
   parseJson,
+  rateLimitRequest,
   requireAdminSession,
   routeError,
 } from "@/features/cms/server/api-helpers";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const limited = rateLimitRequest(request, { limit: 80 });
+
+  if (limited) {
+    return limited;
+  }
+
   const session = await requireAdminSession();
 
   if (!session) {
@@ -29,6 +36,12 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
+  const limited = rateLimitRequest(request, { limit: 30 });
+
+  if (limited) {
+    return limited;
+  }
+
   const session = await requireAdminSession();
 
   if (!session) {

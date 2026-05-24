@@ -1,21 +1,17 @@
 import type { Metadata } from "next";
 
 import { ProjectsPage } from "@/features/portfolio/pages/projects-page";
-import { absoluteUrl } from "@/features/portfolio/lib/utils";
+import { buildMetadata } from "@/features/portfolio/lib/seo";
 import { safePublicProjects } from "@/features/portfolio/server/public-data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
-export const metadata: Metadata = {
-  alternates: { canonical: absoluteUrl("/projects") },
+export const metadata: Metadata = buildMetadata({
   description: "Published portfolio projects and selected work.",
-  openGraph: {
-    description: "Published portfolio projects and selected work.",
-    title: "Projects",
-    url: absoluteUrl("/projects"),
-  },
-  title: "Projects | Portfolio",
-};
+  keywords: ["portfolio projects", "selected work", "software engineering"],
+  path: "/projects",
+  title: "Projects",
+});
 
 export default async function PublicProjectsPage() {
   const projects = await safePublicProjects();

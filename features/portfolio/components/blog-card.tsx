@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 import { MediaFrame } from "@/features/portfolio/components/media-frame";
 import { Tag } from "@/features/portfolio/components/ui-atoms";
@@ -19,7 +19,7 @@ export function BlogCard({
   post: PublicBlogPost;
 }) {
   return (
-    <motion.article
+    <m.article
       className={cn(
         "group border bg-background transition-colors hover:border-foreground",
         compact ? "grid gap-0 md:grid-cols-[220px_1fr]" : "",
@@ -55,6 +55,6 @@ export function BlogCard({
           read --post <ArrowRight aria-hidden="true" className="size-4" />
         </Link>
       </div>
-    </motion.article>
+    </m.article>
   );
 }

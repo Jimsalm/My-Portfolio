@@ -1,4 +1,20 @@
 import ReactMarkdown from "react-markdown";
+import dynamic from "next/dynamic";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+
+const CodeBlock = dynamic(() => import("@/features/portfolio/components/code-block").then((mod) => mod.CodeBlock), {
+  loading: () => <code className="block animate-pulse border bg-[#111] p-4 font-mono text-sm text-white">loading code...</code>,
+  ssr: false,
+});
+
+const sanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    a: [...(defaultSchema.attributes?.a ?? []), ["target"], ["rel"], ["className"]],
+    code: [...(defaultSchema.attributes?.code ?? []), ["className"]],
+  },
+};
 
 export function MarkdownRenderer({ content }: { content: string }) {
   return (
@@ -15,9 +31,7 @@ export function MarkdownRenderer({ content }: { content: string }) {
         code: ({ children, className }) => {
           const isBlock = className?.startsWith("language-");
           return isBlock ? (
-            <code className="block overflow-x-auto border bg-[#111] p-4 font-mono text-sm text-white">
-              {children}
-            </code>
+            <CodeBlock>{children}</CodeBlock>
           ) : (
             <code className="border bg-muted px-1.5 py-0.5 font-mono text-sm">{children}</code>
           );
@@ -30,6 +44,7 @@ export function MarkdownRenderer({ content }: { content: string }) {
         pre: ({ children }) => <pre className="my-6 overflow-x-auto">{children}</pre>,
         ul: ({ children }) => <ul className="ml-5 list-disc space-y-2 font-mono text-sm text-muted-foreground">{children}</ul>,
       }}
+      rehypePlugins={[[rehypeSanitize, sanitizeSchema]]}
     >
       {content}
     </ReactMarkdown>

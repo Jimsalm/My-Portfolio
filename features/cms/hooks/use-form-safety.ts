@@ -5,17 +5,19 @@ import type { FieldValues, UseFormReturn } from "react-hook-form";
 
 export function useUnsavedChangesWarning(isDirty: boolean) {
   useEffect(() => {
-    function handleBeforeUnload(event: BeforeUnloadEvent) {
+    window.onbeforeunload = (event: BeforeUnloadEvent) => {
       if (!isDirty) {
-        return;
+        return null;
       }
 
       event.preventDefault();
       event.returnValue = "";
-    }
+      return "";
+    };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.onbeforeunload = null;
+    };
   }, [isDirty]);
 }
 

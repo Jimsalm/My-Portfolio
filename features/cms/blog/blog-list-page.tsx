@@ -26,6 +26,7 @@ import {
 } from "@/features/cms/hooks/use-blog-posts";
 import { type BlogPost, type ContentStatus } from "@/features/cms/schemas";
 import { formatDate } from "@/features/admin/lib/admin-profile";
+import { fallbackBlurDataURL } from "@/features/portfolio/lib/image-placeholders";
 
 export function BlogListPage() {
   const { data: posts = [], isLoading } = useBlogPosts();
@@ -125,7 +126,16 @@ export function BlogListPage() {
                   <td className="p-3">
                     <div className="relative size-12 border bg-muted">
                       {post.coverImage?.url ? (
-                        <Image alt="" className="object-cover" fill src={post.coverImage.url} unoptimized />
+                        <Image
+                          alt={`${post.title} cover`}
+                          blurDataURL={post.coverImage.blurDataURL ?? fallbackBlurDataURL}
+                          className="object-cover"
+                          fill
+                          placeholder="blur"
+                          sizes="48px"
+                          src={post.coverImage.url}
+                          unoptimized
+                        />
                       ) : null}
                     </div>
                   </td>

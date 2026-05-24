@@ -28,6 +28,7 @@ import {
 } from "@/features/cms/hooks/use-projects";
 import { type ContentStatus, type Project } from "@/features/cms/schemas";
 import { formatDate } from "@/features/admin/lib/admin-profile";
+import { fallbackBlurDataURL } from "@/features/portfolio/lib/image-placeholders";
 
 export function ProjectsListPage() {
   const { data: projects = [], isLoading } = useProjects();
@@ -145,7 +146,16 @@ export function ProjectsListPage() {
                   <td className="p-3">
                     <div className="relative size-12 border bg-muted">
                       {project.thumbnail?.url ? (
-                        <Image alt="" className="object-cover" fill src={project.thumbnail.url} unoptimized />
+                        <Image
+                          alt={`${project.title} thumbnail`}
+                          blurDataURL={project.thumbnail.blurDataURL ?? fallbackBlurDataURL}
+                          className="object-cover"
+                          fill
+                          placeholder="blur"
+                          sizes="48px"
+                          src={project.thumbnail.url}
+                          unoptimized
+                        />
                       ) : null}
                     </div>
                   </td>

@@ -5,6 +5,7 @@ export const adminApiToken = v.string();
 export const status = v.union(v.literal("published"), v.literal("draft"));
 
 export const uploadedFile = v.object({
+  blurDataURL: v.optional(v.string()),
   key: v.string(),
   name: v.string(),
   url: v.string(),

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 import { BlogCard } from "@/features/portfolio/components/blog-card";
 import { EmptyState, SectionHeading, SectionShell } from "@/features/portfolio/components/ui-atoms";
@@ -43,7 +43,7 @@ export function BlogPage({ initialData }: { initialData: PublicBlogPost[] }) {
 
   return (
     <SectionShell className="min-h-screen">
-      <SectionHeading description="grep writing.log --status published --paginate 10">
+      <SectionHeading description="grep writing.log --status published --paginate 10" level="h1">
         ./writing
       </SectionHeading>
 
@@ -61,9 +61,10 @@ export function BlogPage({ initialData }: { initialData: PublicBlogPost[] }) {
           {["All", ...tags].map((tag) => (
             <button
               className={cn(
-                "border px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] transition-colors",
+                "h-11 border px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] transition-colors",
                 activeTag === tag ? "border-foreground bg-foreground text-background" : "text-muted-foreground hover:border-foreground",
               )}
+              aria-pressed={activeTag === tag}
               key={tag}
               onClick={() => updateTag(tag)}
               type="button"
@@ -75,11 +76,11 @@ export function BlogPage({ initialData }: { initialData: PublicBlogPost[] }) {
       </div>
 
       {visiblePosts.length > 0 ? (
-        <motion.div animate="visible" className="grid gap-5" initial="hidden" variants={staggerContainer}>
+        <m.div animate="visible" className="grid gap-5" initial="hidden" variants={staggerContainer}>
           {visiblePosts.map((post) => (
             <BlogCard compact key={post.id} post={post} />
           ))}
-        </motion.div>
+        </m.div>
       ) : (
         <EmptyState>No published posts match this search.</EmptyState>
       )}
@@ -87,7 +88,7 @@ export function BlogPage({ initialData }: { initialData: PublicBlogPost[] }) {
       {filteredPosts.length > postsPerPage ? (
         <div className="mt-8 flex items-center justify-between border p-3 text-sm">
           <button
-            className="border px-3 py-2 disabled:cursor-not-allowed disabled:text-muted-foreground"
+            className="h-11 border px-3 py-2 disabled:cursor-not-allowed disabled:text-muted-foreground"
             disabled={page === 1}
             onClick={() => setPage((current) => Math.max(1, current - 1))}
             type="button"
@@ -98,7 +99,7 @@ export function BlogPage({ initialData }: { initialData: PublicBlogPost[] }) {
             Page {page} of {totalPages}
           </span>
           <button
-            className="border px-3 py-2 disabled:cursor-not-allowed disabled:text-muted-foreground"
+            className="h-11 border px-3 py-2 disabled:cursor-not-allowed disabled:text-muted-foreground"
             disabled={page === totalPages}
             onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
             type="button"

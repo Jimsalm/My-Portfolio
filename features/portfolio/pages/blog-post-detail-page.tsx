@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
+import dynamic from "next/dynamic";
 
 import { BlogCard } from "@/features/portfolio/components/blog-card";
-import { MarkdownRenderer } from "@/features/portfolio/components/markdown-renderer";
 import { MediaFrame } from "@/features/portfolio/components/media-frame";
 import { ShareButtons } from "@/features/portfolio/components/share-buttons";
 import { SectionHeading, SectionShell, Tag } from "@/features/portfolio/components/ui-atoms";
@@ -13,6 +13,13 @@ import { usePublicBlogPost } from "@/features/portfolio/hooks/use-public-data";
 import { fadeUp, motionTransition, staggerContainer } from "@/features/portfolio/lib/motion";
 import { absoluteUrl, formatDisplayDate } from "@/features/portfolio/lib/utils";
 import type { PublicBlogPostDetailData } from "@/features/portfolio/types";
+
+const MarkdownRenderer = dynamic(
+  () => import("@/features/portfolio/components/markdown-renderer").then((mod) => mod.MarkdownRenderer),
+  {
+    loading: () => <div className="h-72 animate-pulse border bg-muted" />,
+  },
+);
 
 export function BlogPostDetailPage({
   initialData,
@@ -35,11 +42,11 @@ export function BlogPostDetailPage({
           <ArrowLeft aria-hidden="true" className="size-4" />
           cd ../writing
         </Link>
-        <motion.div animate="visible" initial="hidden" variants={staggerContainer}>
-          <motion.div variants={fadeUp}>
-            <MediaFrame alt={post.title} className="aspect-[16/8]" image={post.coverImage} priority />
-          </motion.div>
-          <motion.div className="mt-10 max-w-4xl" variants={fadeUp} transition={motionTransition}>
+        <m.div animate="visible" initial="hidden" variants={staggerContainer}>
+          <m.div variants={fadeUp}>
+            <MediaFrame alt={post.title} className="aspect-[16/8]" image={post.coverImage} priority sizes="100vw" />
+          </m.div>
+          <m.div className="mt-10 max-w-4xl" variants={fadeUp} transition={motionTransition}>
             <div className="flex flex-wrap gap-3 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
               <time>{formatDisplayDate(post.publishedAt)}</time>
               <span>{post.readTime} min read</span>
@@ -54,8 +61,8 @@ export function BlogPostDetailPage({
             <div className="mt-8">
               <ShareButtons title={post.title} url={absoluteUrl(`/blog/${post.slug}`)} />
             </div>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       </SectionShell>
 
       <SectionShell className="pt-8">
@@ -67,11 +74,11 @@ export function BlogPostDetailPage({
       <SectionShell>
         <SectionHeading>./related-posts</SectionHeading>
         {data.relatedPosts.length > 0 ? (
-          <motion.div animate="visible" className="grid gap-6 md:grid-cols-3" initial="hidden" variants={staggerContainer}>
+          <m.div animate="visible" className="grid gap-6 md:grid-cols-3" initial="hidden" variants={staggerContainer}>
             {data.relatedPosts.map((related) => (
               <BlogCard key={related.id} post={related} />
             ))}
-          </motion.div>
+          </m.div>
         ) : null}
       </SectionShell>
     </>

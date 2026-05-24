@@ -3,6 +3,7 @@ import { z } from "zod";
 export const contentStatusSchema = z.enum(["published", "draft"]);
 
 export const uploadedFileSchema = z.object({
+  blurDataURL: z.string().optional(),
   key: z.string().min(1),
   name: z.string().min(1),
   url: z.string().url(),
@@ -21,11 +22,66 @@ const optionalUrlSchema = z
   .optional()
   .default("");
 
-export const projectFormSchema = z.object({
+const slugSchema = z
+  .string()
+  .trim()
+  .min(1, "Slug is required.")
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase letters, numbers, and hyphens only.");
+
+const timestampSchema = z
+  .number()
+  .nullable()
+  .optional()
+  .refine((value) => value == null || !Number.isNaN(new Date(value).getTime()), {
+    message: "Enter a valid date.",
+  })
+  .transform((value) => value ?? null);
+
+const monthYearPattern =
+  /^(jan(uary)?|feb(ruary)?|mar(ch)?|apr(il)?|may|jun(e)?|jul(y)?|aug(ust)?|sep(t|tember)?|oct(ober)?|nov(ember)?|dec(ember)?)\s+\d{4}$/i;
+
+function isValidDateString(value: string) {
+  const trimmed = value.trim();
+  const yearOnly = trimmed.match(/^(\d{4})$/);
+  const yearMonth = trimmed.match(/^(\d{4})-(\d{2})$/);
+  const fullDate = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  if (yearOnly) {
+    return true;
+  }
+
+  if (yearMonth) {
+    const month = Number(yearMonth[2]);
+    return month >= 1 && month <= 12;
+  }
+
+  if (fullDate) {
+    const year = Number(fullDate[1]);
+    const month = Number(fullDate[2]);
+    const day = Number(fullDate[3]);
+    const date = new Date(Date.UTC(year, month - 1, day));
+
+    return (
+      date.getUTCFullYear() === year &&
+      date.getUTCMonth() === month - 1 &&
+      date.getUTCDate() === day
+    );
+  }
+
+  return monthYearPattern.test(trimmed);
+}
+
+const dateStringSchema = z
+  .string()
+  .trim()
+  .refine(isValidDateString, "Use YYYY, YYYY-MM, YYYY-MM-DD, or Month YYYY.");
+
+export const projectFormSchema = z
+  .object({
   title: z.string().trim().min(1, "Title is required."),
-  slug: z.string().trim().min(1, "Slug is required."),
-  description: z.string().trim().min(1, "Description is required."),
-  details: z.string().trim().min(1, "Details are required."),
+  slug: slugSchema,
+  description: z.string().trim().min(20, "Description must be at least 20 characters."),
+  details: z.string().trim().min(40, "Details must be at least 40 characters."),
   thumbnail: nullableUploadedFileSchema,
   techStack: z.array(z.string().trim().min(1)).default([]),
   liveUrl: optionalUrlSchema,
@@ -33,22 +89,27 @@ export const projectFormSchema = z.object({
   status: contentStatusSchema.default("draft"),
   featured: z.boolean().default(false),
   priority: z.coerce.number().int().min(0).default(0),
-});
+})
+  .superRefine((value, context) => {
+    if (value.status === "published" && !value.thumbnail) {
+      context.addIssue({
+        code: "custom",
+        message: "Thumbnail image is required before publishing.",
+        path: ["thumbnail"],
+      });
+    }
+  });
 
 export const blogPostFormSchema = z.object({
   title: z.string().trim().min(1, "Title is required."),
-  slug: z.string().trim().min(1, "Slug is required."),
-  excerpt: z.string().trim().min(1, "Excerpt is required."),
-  content: z.string().trim().min(1, "Content is required."),
+  slug: slugSchema,
+  excerpt: z.string().trim().min(20, "Excerpt must be at least 20 characters."),
+  content: z.string().trim().min(80, "Content must be at least 80 characters."),
   coverImage: nullableUploadedFileSchema,
   tags: z.array(z.string().trim().min(1)).default([]),
   status: contentStatusSchema.default("draft"),
   featured: z.boolean().default(false),
-  publishedAt: z
-    .number()
-    .nullable()
-    .optional()
-    .transform((value) => value ?? null),
+  publishedAt: timestampSchema,
   readTime: z.coerce.number().int().min(1).default(1),
 });
 
@@ -66,29 +127,39 @@ export const skillCategorySchema = z.object({
   skills: z.array(z.string().trim().min(1)).default([]),
 });
 
-export const experienceSchema = z.object({
+export const experienceSchema = z
+  .object({
   id: z.string().min(1),
   company: z.string().trim().min(1, "Company is required."),
   role: z.string().trim().min(1, "Role is required."),
-  startDate: z.string().trim().min(1, "Start date is required."),
+  startDate: dateStringSchema,
   endDate: z.string().trim().optional().default(""),
   description: z.string().trim().min(1, "Description is required."),
   current: z.boolean().default(false),
-});
+})
+  .superRefine((value, context) => {
+    if (!value.current && !dateStringSchema.safeParse(value.endDate).success) {
+      context.addIssue({
+        code: "custom",
+        message: "Use YYYY, YYYY-MM, YYYY-MM-DD, or Month YYYY.",
+        path: ["endDate"],
+      });
+    }
+  });
 
 export const educationSchema = z.object({
   id: z.string().min(1),
   school: z.string().trim().min(1, "School is required."),
   degree: z.string().trim().min(1, "Degree is required."),
-  year: z.string().trim().min(1, "Year is required."),
+  year: z.string().trim().regex(/^\d{4}$/, "Use a four-digit year."),
 });
 
 export const aboutFormSchema = z.object({
   profilePhoto: nullableUploadedFileSchema,
   fullName: z.string().trim().min(1, "Full name is required."),
   role: z.string().trim().min(1, "Role is required."),
-  shortBio: z.string().trim().min(1, "Short bio is required."),
-  longBio: z.string().trim().min(1, "Long bio is required."),
+  shortBio: z.string().trim().min(20, "Short bio must be at least 20 characters."),
+  longBio: z.string().trim().min(80, "Long bio must be at least 80 characters."),
   email: z.string().trim().email("Enter a valid email."),
   location: z.string().trim().min(1, "Location is required."),
   resumeFile: nullableUploadedFileSchema,

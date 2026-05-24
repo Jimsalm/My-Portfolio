@@ -7,6 +7,7 @@ import {
   dataResponse,
   getAdminApiToken,
   parseJson,
+  rateLimitRequest,
   requireAdminSession,
   routeError,
 } from "@/features/cms/server/api-helpers";
@@ -15,7 +16,13 @@ type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
-export async function GET(_request: Request, context: RouteContext) {
+export async function GET(request: Request, context: RouteContext) {
+  const limited = rateLimitRequest(request, { limit: 80 });
+
+  if (limited) {
+    return limited;
+  }
+
   const session = await requireAdminSession();
 
   if (!session) {
@@ -36,6 +43,12 @@ export async function GET(_request: Request, context: RouteContext) {
 }
 
 export async function PUT(request: Request, context: RouteContext) {
+  const limited = rateLimitRequest(request, { limit: 30 });
+
+  if (limited) {
+    return limited;
+  }
+
   const session = await requireAdminSession();
 
   if (!session) {
@@ -57,7 +70,13 @@ export async function PUT(request: Request, context: RouteContext) {
   }
 }
 
-export async function DELETE(_request: Request, context: RouteContext) {
+export async function DELETE(request: Request, context: RouteContext) {
+  const limited = rateLimitRequest(request, { limit: 30 });
+
+  if (limited) {
+    return limited;
+  }
+
   const session = await requireAdminSession();
 
   if (!session) {

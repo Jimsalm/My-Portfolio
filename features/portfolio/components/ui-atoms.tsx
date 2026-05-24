@@ -13,16 +13,20 @@ export function SectionShell({
 export function SectionHeading({
   children,
   description,
+  level = "h2",
 }: {
   children: React.ReactNode;
   description?: string;
+  level?: "h1" | "h2";
 }) {
+  const Heading = level;
+
   return (
     <div className="mb-10 flex flex-col gap-3">
       <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
         $ portfolio --section
       </p>
-      <h2 className="font-mono text-3xl font-semibold tracking-tight md:text-5xl">{children}</h2>
+      <Heading className="font-mono text-3xl font-semibold tracking-tight md:text-5xl">{children}</Heading>
       {description ? <p className="max-w-2xl font-mono text-sm leading-7 text-muted-foreground">{description}</p> : null}
     </div>
   );
@@ -73,7 +77,7 @@ export function IconButton({
   return (
     <Link
       aria-label={label}
-      className="inline-flex size-10 items-center justify-center border bg-background transition-colors hover:border-foreground hover:bg-muted"
+      className="inline-flex size-11 items-center justify-center border bg-background transition-colors hover:border-foreground hover:bg-muted"
       href={href}
       rel="noreferrer"
       target="_blank"

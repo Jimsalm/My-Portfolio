@@ -53,11 +53,11 @@ export function MatrixRainBackground() {
         const text = glyphs[Math.floor(Math.random() * glyphs.length)];
         const x = index * fontSize;
         const y = drop * rowHeight;
-        const leadOpacity = 0.42 + Math.random() * 0.24;
+        const leadOpacity = 0.18 + Math.random() * 0.16;
 
         context.fillStyle = `rgb(255 255 255 / ${leadOpacity})`;
         context.fillText(text, x, y);
-        context.fillStyle = "rgb(255 255 255 / 0.1)";
+        context.fillStyle = "rgb(255 255 255 / 0.06)";
         context.fillText(text, x, y - rowHeight);
 
         if (y > height && Math.random() > 0.975) {
@@ -92,7 +92,7 @@ export function MatrixRainBackground() {
     <>
       <canvas
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-0 opacity-35"
+        className="pointer-events-none fixed inset-0 z-0 opacity-25"
         id="portfolio-matrix-rain"
         ref={canvasRef}
       />
@@ -102,7 +102,7 @@ export function MatrixRainBackground() {
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(to_bottom,transparent_0,transparent_23px,rgb(255_255_255/0.06)_24px),linear-gradient(to_right,transparent_0,transparent_23px,rgb(255_255_255/0.05)_24px)] bg-[length:24px_24px] opacity-30"
+        className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(to_bottom,transparent_0,transparent_23px,rgb(255_255_255/0.045)_24px),linear-gradient(to_right,transparent_0,transparent_23px,rgb(255_255_255/0.04)_24px)] bg-[length:24px_24px] opacity-25"
       />
     </>
   );

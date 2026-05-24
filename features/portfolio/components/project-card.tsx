@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ExternalLink, Github } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 import { MediaFrame } from "@/features/portfolio/components/media-frame";
 import { IconButton, Tag } from "@/features/portfolio/components/ui-atoms";
@@ -11,7 +11,7 @@ import { fadeUp, motionTransition } from "@/features/portfolio/lib/motion";
 
 export function ProjectCard({ project }: { project: PublicProject }) {
   return (
-    <motion.article
+    <m.article
       className="group border bg-background transition-colors hover:border-foreground"
       variants={fadeUp}
       transition={motionTransition}
@@ -50,6 +50,6 @@ export function ProjectCard({ project }: { project: PublicProject }) {
           ))}
         </div>
       </div>
-    </motion.article>
+    </m.article>
   );
 }

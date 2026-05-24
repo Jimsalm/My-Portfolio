@@ -2,15 +2,22 @@
 
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, Github } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
+import dynamic from "next/dynamic";
 
-import { MarkdownRenderer } from "@/features/portfolio/components/markdown-renderer";
 import { MediaFrame } from "@/features/portfolio/components/media-frame";
 import { ProjectCard } from "@/features/portfolio/components/project-card";
 import { IconButton, SectionHeading, SectionShell, Tag, TextButton } from "@/features/portfolio/components/ui-atoms";
 import { usePublicProject } from "@/features/portfolio/hooks/use-public-data";
 import { fadeUp, motionTransition, staggerContainer } from "@/features/portfolio/lib/motion";
 import type { PublicProjectDetailData } from "@/features/portfolio/types";
+
+const MarkdownRenderer = dynamic(
+  () => import("@/features/portfolio/components/markdown-renderer").then((mod) => mod.MarkdownRenderer),
+  {
+    loading: () => <div className="h-72 animate-pulse border bg-muted" />,
+  },
+);
 
 export function ProjectDetailPage({
   initialData,
@@ -33,11 +40,11 @@ export function ProjectDetailPage({
           <ArrowLeft aria-hidden="true" className="size-4" />
           cd ../work
         </Link>
-        <motion.div animate="visible" initial="hidden" variants={staggerContainer}>
-          <motion.div variants={fadeUp}>
-            <MediaFrame alt={project.title} className="aspect-[16/8]" image={project.thumbnail} priority />
-          </motion.div>
-          <motion.div className="mt-10 grid gap-8 lg:grid-cols-[1fr_280px]" variants={fadeUp} transition={motionTransition}>
+        <m.div animate="visible" initial="hidden" variants={staggerContainer}>
+          <m.div variants={fadeUp}>
+            <MediaFrame alt={project.title} className="aspect-[16/8]" image={project.thumbnail} priority sizes="100vw" />
+          </m.div>
+          <m.div className="mt-10 grid gap-8 lg:grid-cols-[1fr_280px]" variants={fadeUp} transition={motionTransition}>
             <div>
               <p className="font-mono text-sm text-muted-foreground">cat ./{project.slug}/README.md</p>
               <h1 className="mt-4 font-mono text-5xl font-semibold tracking-tight md:text-7xl">{project.title}</h1>
@@ -52,8 +59,8 @@ export function ProjectDetailPage({
               <IconButton href={project.liveUrl} icon={ExternalLink} label="Live site" />
               <IconButton href={project.githubUrl} icon={Github} label="GitHub" />
             </div>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       </SectionShell>
 
       <SectionShell className="pt-8">
@@ -65,11 +72,11 @@ export function ProjectDetailPage({
       <SectionShell>
         <SectionHeading>./related-work</SectionHeading>
         {data.relatedProjects.length > 0 ? (
-          <motion.div animate="visible" className="grid gap-6 md:grid-cols-3" initial="hidden" variants={staggerContainer}>
+          <m.div animate="visible" className="grid gap-6 md:grid-cols-3" initial="hidden" variants={staggerContainer}>
             {data.relatedProjects.map((related) => (
               <ProjectCard key={related.id} project={related} />
             ))}
-          </motion.div>
+          </m.div>
         ) : (
           <TextButton href="/projects" variant="secondary">
             View all projects

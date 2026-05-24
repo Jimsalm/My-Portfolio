@@ -7,6 +7,7 @@ import {
   dataResponse,
   getAdminApiToken,
   parseJson,
+  rateLimitRequest,
   requireAdminSession,
   routeError,
 } from "@/features/cms/server/api-helpers";
@@ -16,6 +17,12 @@ type RouteContext = {
 };
 
 export async function PATCH(request: Request, context: RouteContext) {
+  const limited = rateLimitRequest(request, { limit: 60 });
+
+  if (limited) {
+    return limited;
+  }
+
   const session = await requireAdminSession();
 
   if (!session) {

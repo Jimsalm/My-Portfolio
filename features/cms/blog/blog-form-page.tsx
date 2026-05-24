@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Controller, useForm, useWatch, type Resolver } from "react-hook-form";
+import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -49,8 +50,10 @@ export function BlogFormPage({ id, mode }: BlogFormPageProps) {
   const title = useWatch({ control: form.control, name: "title" });
   const slug = useWatch({ control: form.control, name: "slug" });
   const content = useWatch({ control: form.control, name: "content" });
+  const excerpt = useWatch({ control: form.control, name: "excerpt" });
   const publishedAt = useWatch({ control: form.control, name: "publishedAt" });
   const draftKey = `blog-draft-${id ?? "new"}`;
+  const isPending = createPost.isPending || updatePost.isPending;
 
   useUnsavedChangesWarning(form.formState.isDirty);
   useAutoSaveDraft(form, draftKey);
@@ -87,12 +90,17 @@ export function BlogFormPage({ id, mode }: BlogFormPageProps) {
     });
   }
 
+  function onInvalid() {
+    const firstError = document.querySelector("[aria-invalid='true']");
+    firstError?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
   if (mode === "edit" && isLoading) {
     return <Skeleton className="h-96 rounded-none" />;
   }
 
   return (
-    <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
+    <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
       <div className="flex items-center justify-between border p-4">
         <div>
           <h2 className="text-xl font-semibold tracking-normal">
@@ -104,7 +112,8 @@ export function BlogFormPage({ id, mode }: BlogFormPageProps) {
           <Button asChild className="rounded-none" variant="outline">
             <Link href="/admin/blog">Cancel</Link>
           </Button>
-          <Button className="rounded-none" disabled={createPost.isPending || updatePost.isPending}>
+          <Button className="rounded-none" disabled={isPending}>
+            {isPending ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : null}
             Save
           </Button>
         </div>
@@ -112,13 +121,13 @@ export function BlogFormPage({ id, mode }: BlogFormPageProps) {
 
       <div className="grid gap-5 border p-4 lg:grid-cols-2">
         <Field label="Title" error={form.formState.errors.title?.message}>
-          <Input className="rounded-none" {...form.register("title")} />
+          <Input aria-invalid={Boolean(form.formState.errors.title)} className="rounded-none" {...form.register("title")} />
         </Field>
-        <Field label="Slug" error={form.formState.errors.slug?.message}>
-          <Input className="rounded-none" {...form.register("slug")} />
+        <Field description={slug ? `Preview: /blog/${slug}` : "Use lowercase words separated by hyphens."} label="Slug" error={form.formState.errors.slug?.message}>
+          <Input aria-invalid={Boolean(form.formState.errors.slug)} className="rounded-none" {...form.register("slug")} />
         </Field>
-        <Field label="Excerpt" error={form.formState.errors.excerpt?.message}>
-          <Textarea className="rounded-none" {...form.register("excerpt")} />
+        <Field count={excerpt?.length ?? 0} label="Excerpt" error={form.formState.errors.excerpt?.message}>
+          <Textarea aria-invalid={Boolean(form.formState.errors.excerpt)} className="rounded-none" {...form.register("excerpt")} />
         </Field>
         <Controller
           control={form.control}
@@ -192,7 +201,8 @@ export function BlogFormPage({ id, mode }: BlogFormPageProps) {
 
       <div className="grid gap-5 border p-4 lg:grid-cols-2">
         <Field label="Content" error={form.formState.errors.content?.message}>
-          <Textarea className="min-h-96 rounded-none font-mono" {...form.register("content")} />
+          <Textarea aria-invalid={Boolean(form.formState.errors.content)} className="min-h-96 rounded-none font-mono" {...form.register("content")} />
+          <p className="text-xs text-muted-foreground">{content?.length ?? 0} characters</p>
         </Field>
         <div className="space-y-2">
           <Label>Preview</Label>
@@ -207,10 +217,14 @@ export function BlogFormPage({ id, mode }: BlogFormPageProps) {
 
 function Field({
   children,
+  count,
+  description,
   error,
   label,
 }: {
   children: React.ReactNode;
+  count?: number;
+  description?: string;
   error?: string;
   label: string;
 }) {
@@ -218,6 +232,8 @@ function Field({
     <div className="space-y-2">
       <Label>{label}</Label>
       {children}
+      {description ? <p className="text-xs text-muted-foreground">{description}</p> : null}
+      {typeof count === "number" ? <p className="text-xs text-muted-foreground">{count} characters</p> : null}
       {error ? <p className="text-xs text-destructive">{error}</p> : null}
     </div>
   );

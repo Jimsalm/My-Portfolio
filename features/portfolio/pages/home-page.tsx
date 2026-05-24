@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FileDown, Github, Globe, Linkedin, Mail, Twitter } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 import { BlogCard } from "@/features/portfolio/components/blog-card";
 import { ProjectCard } from "@/features/portfolio/components/project-card";
@@ -53,14 +53,14 @@ export function HomePage({ initialData }: { initialData: PublicHomeData }) {
   return (
     <>
       <SectionShell className="flex min-h-[calc(100vh-4rem)] items-center">
-        <motion.div
+        <m.div
           animate="visible"
           className="grid w-full gap-8 lg:grid-cols-[1fr_420px] lg:items-end"
           initial="hidden"
           transition={motionTransition}
           variants={staggerContainer}
         >
-          <motion.div variants={fadeUp}>
+          <m.div variants={fadeUp}>
             <p className="font-mono text-sm text-muted-foreground">{handle}:~$ whoami</p>
             <h1 className="mt-6 font-mono text-5xl font-semibold leading-[0.95] tracking-tight md:text-7xl lg:text-8xl">
               {name}
@@ -79,11 +79,11 @@ export function HomePage({ initialData }: { initialData: PublicHomeData }) {
                 tail -f writing.log
               </TextButton>
             </div>
-          </motion.div>
-          <motion.div variants={fadeUp}>
+          </m.div>
+          <m.div variants={fadeUp}>
             <EditorPanel fileName="session.info.ts" lines={sessionInfoLines} />
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       </SectionShell>
 
       <SectionShell>
@@ -96,7 +96,7 @@ export function HomePage({ initialData }: { initialData: PublicHomeData }) {
           </Link>
         </div>
         {data.featuredProjects.length > 0 ? (
-          <motion.div
+          <m.div
             animate="visible"
             className="grid gap-6 md:grid-cols-3"
             initial="hidden"
@@ -105,7 +105,7 @@ export function HomePage({ initialData }: { initialData: PublicHomeData }) {
             {data.featuredProjects.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))}
-          </motion.div>
+          </m.div>
         ) : (
           <div className="border border-dashed p-10 text-center text-sm text-muted-foreground">
             No featured projects are published yet.
@@ -126,7 +126,7 @@ export function HomePage({ initialData }: { initialData: PublicHomeData }) {
           </Link>
         </div>
         {data.latestPosts.length > 0 ? (
-          <motion.div
+          <m.div
             animate="visible"
             className="grid gap-6 md:grid-cols-3"
             initial="hidden"
@@ -135,7 +135,7 @@ export function HomePage({ initialData }: { initialData: PublicHomeData }) {
             {data.latestPosts.map((post) => (
               <BlogCard key={post.id} post={post} />
             ))}
-          </motion.div>
+          </m.div>
         ) : (
           <div className="border border-dashed p-10 text-center text-sm text-muted-foreground">
             No blog posts are published yet.

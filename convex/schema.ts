@@ -2,6 +2,7 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 const uploadedFile = v.object({
+  blurDataURL: v.optional(v.string()),
   key: v.string(),
   name: v.string(),
   url: v.string(),

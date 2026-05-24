@@ -1,9 +1,9 @@
 "use client";
 
 import { FileDown, Github, Globe, Linkedin, Mail, MapPin, Twitter } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
+import dynamic from "next/dynamic";
 
-import { MarkdownRenderer } from "@/features/portfolio/components/markdown-renderer";
 import { MediaFrame } from "@/features/portfolio/components/media-frame";
 import { IconButton, SectionHeading, SectionShell, Tag, TextButton } from "@/features/portfolio/components/ui-atoms";
 import { usePublicAbout } from "@/features/portfolio/hooks/use-public-data";
@@ -24,6 +24,13 @@ const socialIcons = {
   website: Globe,
 };
 
+const MarkdownRenderer = dynamic(
+  () => import("@/features/portfolio/components/markdown-renderer").then((mod) => mod.MarkdownRenderer),
+  {
+    loading: () => <div className="h-40 animate-pulse border bg-muted" />,
+  },
+);
+
 export function AboutPage({ initialData }: { initialData: PublicAbout | null }) {
   const { data: about = initialData } = usePublicAbout(initialData);
   const name = getProfileName(about);
@@ -34,16 +41,16 @@ export function AboutPage({ initialData }: { initialData: PublicAbout | null }) 
   return (
     <>
       <SectionShell>
-        <motion.div
+        <m.div
           animate="visible"
           className="grid gap-10 lg:grid-cols-[320px_1fr] lg:items-end"
           initial="hidden"
           variants={staggerContainer}
         >
-          <motion.div variants={fadeUp}>
-            <MediaFrame alt={name} className="aspect-square" image={about?.profilePhoto ?? null} priority />
-          </motion.div>
-          <motion.div variants={fadeUp} transition={motionTransition}>
+          <m.div variants={fadeUp}>
+            <MediaFrame alt={name} className="aspect-square" image={about?.profilePhoto ?? null} priority sizes="(min-width: 1024px) 320px, 100vw" />
+          </m.div>
+          <m.div variants={fadeUp} transition={motionTransition}>
             <p className="font-mono text-sm text-muted-foreground">whoami --verbose</p>
             <h1 className="mt-4 font-mono text-5xl font-semibold tracking-tight md:text-7xl">{name}</h1>
             <p className="mt-5 font-mono text-2xl font-medium tracking-tight">
@@ -51,8 +58,8 @@ export function AboutPage({ initialData }: { initialData: PublicAbout | null }) 
               {role}
             </p>
             <p className="mt-5 max-w-2xl font-mono text-sm leading-8 text-muted-foreground">{bio}</p>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       </SectionShell>
 
       <SectionShell className="grid gap-12 pt-8 lg:grid-cols-[1fr_320px]">

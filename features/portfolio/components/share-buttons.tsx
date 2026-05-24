@@ -9,7 +9,7 @@ export function ShareButtons({ title, url }: { title: string; url: string }) {
   return (
     <div className="flex flex-wrap gap-2">
       <button
-        className="inline-flex h-10 items-center gap-2 border px-3 font-mono text-sm transition-colors hover:border-foreground hover:bg-muted"
+        className="inline-flex h-11 items-center gap-2 border px-3 font-mono text-sm transition-colors hover:border-foreground hover:bg-muted"
         onClick={async () => {
           await navigator.clipboard.writeText(url);
           toast.success("Link copied.");
@@ -20,7 +20,7 @@ export function ShareButtons({ title, url }: { title: string; url: string }) {
         copy --url
       </button>
       <a
-        className="inline-flex h-10 items-center gap-2 border px-3 font-mono text-sm transition-colors hover:border-foreground hover:bg-muted"
+        className="inline-flex h-11 items-center gap-2 border px-3 font-mono text-sm transition-colors hover:border-foreground hover:bg-muted"
         href={twitterUrl}
         rel="noreferrer"
         target="_blank"

@@ -1,14 +1,21 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
+import { PublicNotFoundPanel } from "@/features/portfolio/components/public-not-found";
 import { BlogPostDetailPage } from "@/features/portfolio/pages/blog-post-detail-page";
-import { absoluteUrl } from "@/features/portfolio/lib/utils";
+import {
+  articleJsonLd,
+  buildMetadata,
+  getOgImageUrl,
+  jsonLdScriptProps,
+  postDescription,
+} from "@/features/portfolio/lib/seo";
 import {
   getPublicBlogPost,
   getPublicBlogSlugs,
+  safePublicAbout,
 } from "@/features/portfolio/server/public-data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 type PublicBlogPostPageProps = {
   params: Promise<{ slug: string }>;
@@ -32,22 +39,31 @@ export async function generateMetadata({
     const { post } = await getPublicBlogPost(slug);
 
     if (!post) {
-      return { title: "Post Not Found | Portfolio" };
+      return {
+        ...buildMetadata({
+          description: "The requested blog post could not be found.",
+          path: `/blog/${slug}`,
+          title: "Post Not Found",
+        }),
+        robots: { follow: false, index: false },
+      };
     }
 
-    return {
-      alternates: { canonical: absoluteUrl(`/blog/${post.slug}`) },
-      description: post.excerpt,
-      openGraph: {
-        description: post.excerpt,
-        images: post.coverImage?.url ? [{ url: post.coverImage.url }] : undefined,
-        title: post.title,
-        url: absoluteUrl(`/blog/${post.slug}`),
-      },
-      title: `${post.title} | Portfolio`,
-    };
+    return buildMetadata({
+      description: postDescription(post),
+      image: getOgImageUrl({ slug: post.slug, type: "blog" }),
+      keywords: ["blog", ...post.tags],
+      path: `/blog/${post.slug}`,
+      title: post.title,
+      type: "article",
+    });
   } catch {
-    return { title: "Blog Post | Portfolio" };
+    return buildMetadata({
+      description: "Blog post from the portfolio.",
+      path: `/blog/${slug}`,
+      title: "Blog Post",
+      type: "article",
+    });
   }
 }
 
@@ -56,8 +72,15 @@ export default async function PublicBlogPostPage({ params }: PublicBlogPostPageP
   const data = await getPublicBlogPost(slug);
 
   if (!data.post) {
-    notFound();
+    return <PublicNotFoundPanel />;
   }
 
-  return <BlogPostDetailPage initialData={data} slug={slug} />;
+  const about = await safePublicAbout();
+
+  return (
+    <>
+      <script {...jsonLdScriptProps(articleJsonLd(data.post, about))} />
+      <BlogPostDetailPage initialData={data} slug={slug} />
+    </>
+  );
 }

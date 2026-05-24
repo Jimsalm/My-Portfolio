@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LazyMotion, domAnimation } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
@@ -30,9 +31,12 @@ export function PortfolioShell({
   return (
     <div className="terminal-theme relative min-h-screen overflow-x-hidden bg-background text-foreground">
       <MatrixRainBackground />
+      <a className="skip-link" href="#main-content">
+        skip to main content
+      </a>
       <header className="fixed inset-x-0 top-0 z-40 border-b bg-background/85 font-mono backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5">
-          <Link className="text-sm font-semibold tracking-tight" href="/" onClick={() => setIsOpen(false)}>
+          <Link className="inline-flex h-11 items-center text-sm font-semibold tracking-tight" href="/" onClick={() => setIsOpen(false)}>
             {profileHandle}:~$
           </Link>
 
@@ -52,7 +56,7 @@ export function PortfolioShell({
           <button
             aria-expanded={isOpen}
             aria-label="Toggle navigation"
-            className="inline-flex size-10 items-center justify-center border md:hidden"
+            className="inline-flex size-11 items-center justify-center border md:hidden"
             onClick={() => setIsOpen((current) => !current)}
             type="button"
           >
@@ -89,7 +93,11 @@ export function PortfolioShell({
         </div>
       </header>
 
-      <main className="relative z-10 pt-16">{children}</main>
+      <LazyMotion features={domAnimation}>
+        <main className="relative z-10 pt-16" id="main-content">
+          {children}
+        </main>
+      </LazyMotion>
       <Footer profileHandle={profileHandle} profileName={profileName} />
     </div>
   );
@@ -107,7 +115,7 @@ function NavLink({
   return (
     <Link
       className={cn(
-        "relative flex items-center gap-2 py-2 transition-colors hover:text-foreground",
+        "relative flex h-11 items-center gap-2 transition-colors hover:text-foreground",
         active ? "font-semibold text-foreground" : "text-muted-foreground",
       )}
       href={href}
@@ -137,13 +145,13 @@ function Footer({
           </p>
         </div>
         <div className="flex flex-wrap gap-5 text-sm text-muted-foreground">
-          <Link className="hover:text-foreground" href="/projects">
+          <Link className="inline-flex h-11 items-center hover:text-foreground" href="/projects">
             Projects
           </Link>
-          <Link className="hover:text-foreground" href="/blog">
+          <Link className="inline-flex h-11 items-center hover:text-foreground" href="/blog">
             Blog
           </Link>
-          <Link className="hover:text-foreground" href="/about">
+          <Link className="inline-flex h-11 items-center hover:text-foreground" href="/about">
             About
           </Link>
           <span>© {year}</span>

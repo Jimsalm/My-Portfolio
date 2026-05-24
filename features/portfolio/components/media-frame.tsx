@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import type { UploadedFile } from "@/features/cms/schemas";
+import { fallbackBlurDataURL } from "@/features/portfolio/lib/image-placeholders";
 import { cn } from "@/lib/utils";
 
 type MediaFrameProps = {
@@ -11,6 +12,7 @@ type MediaFrameProps = {
   className?: string;
   image: UploadedFile | null | undefined;
   priority?: boolean;
+  sizes?: string;
 };
 
 function getMediaSources(image: UploadedFile | null | undefined) {
@@ -31,7 +33,13 @@ function getMediaSources(image: UploadedFile | null | undefined) {
   return sources;
 }
 
-export function MediaFrame({ alt, className, image, priority }: MediaFrameProps) {
+export function MediaFrame({
+  alt,
+  className,
+  image,
+  priority,
+  sizes = "(min-width: 1024px) 50vw, 100vw",
+}: MediaFrameProps) {
   const [failedSources, setFailedSources] = useState<string[]>([]);
   const sources = getMediaSources(image);
   const src = sources.find((source) => !failedSources.includes(source));
@@ -41,11 +49,13 @@ export function MediaFrame({ alt, className, image, priority }: MediaFrameProps)
       {src ? (
         <Image
           alt={alt}
+          blurDataURL={image?.blurDataURL ?? fallbackBlurDataURL}
           className="object-cover"
           fill
           onError={() => setFailedSources((currentSources) => [...currentSources, src])}
+          placeholder="blur"
           priority={priority}
-          sizes="(min-width: 1024px) 50vw, 100vw"
+          sizes={sizes}
           src={src}
           unoptimized
         />

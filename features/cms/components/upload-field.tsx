@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/axios";
 import { useUploadThing } from "@/lib/uploadthing";
 import { type UploadedFile } from "@/features/cms/schemas";
+import { createBlurDataURL, fallbackBlurDataURL } from "@/features/portfolio/lib/image-placeholders";
 
 type UploadEndpoint =
   | "blogCover"
@@ -32,7 +33,8 @@ export function UploadField({
   value,
 }: UploadFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [preview, setPreview] = useState<string | null>(value?.url ?? null);
+  const [localPreview, setLocalPreview] = useState<string | null>(null);
+  const [localPreviewBlur, setLocalPreviewBlur] = useState<string | undefined>();
   const [progress, setProgress] = useState(0);
   const { isUploading, startUpload } = useUploadThing(endpoint, {
     onUploadError: (error) => {
@@ -42,6 +44,8 @@ export function UploadField({
     uploadProgressGranularity: "fine",
   });
   const isImage = accept.includes("image");
+  const preview = localPreview ?? value?.url ?? null;
+  const previewBlur = localPreviewBlur ?? value?.blurDataURL;
 
   async function handleFile(file: File) {
     if (isImage && !file.type.startsWith("image/")) {
@@ -54,8 +58,13 @@ export function UploadField({
       return;
     }
 
-    if (isImage) {
-      setPreview(URL.createObjectURL(file));
+    const blurDataURL = isImage ? await createBlurDataURL(file) : undefined;
+
+    const previewUrl = isImage ? URL.createObjectURL(file) : null;
+
+    if (isImage && previewUrl) {
+      setLocalPreviewBlur(blurDataURL);
+      setLocalPreview(previewUrl);
     }
 
     const previousKey = value?.key;
@@ -63,17 +72,24 @@ export function UploadField({
     const uploadedFile = uploaded?.[0];
 
     if (!uploadedFile) {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
       return;
     }
 
     const uploadedUrl = uploadedFile.ufsUrl;
 
     onChange({
+      blurDataURL,
       key: uploadedFile.key,
       name: uploadedFile.name,
       url: uploadedUrl,
     });
-    setPreview(uploadedUrl);
+    setLocalPreview(uploadedUrl);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
 
     if (previousKey && previousKey !== uploadedFile.key) {
       await apiRequest({
@@ -92,7 +108,16 @@ export function UploadField({
           <div className="flex items-center gap-3">
             {isImage && preview ? (
               <div className="relative size-16 border bg-muted">
-                <Image alt="" className="object-cover" fill src={preview} unoptimized />
+                <Image
+                  alt=""
+                  blurDataURL={previewBlur ?? value?.blurDataURL ?? fallbackBlurDataURL}
+                  className="object-cover"
+                  fill
+                  placeholder="blur"
+                  sizes="64px"
+                  src={preview}
+                  unoptimized
+                />
               </div>
             ) : (
               <div className="flex size-16 items-center justify-center border bg-muted">
@@ -115,7 +140,8 @@ export function UploadField({
                   });
                 }
                 onChange(null);
-                setPreview(null);
+                setLocalPreview(null);
+                setLocalPreviewBlur(undefined);
               }}
               size="icon"
               type="button"

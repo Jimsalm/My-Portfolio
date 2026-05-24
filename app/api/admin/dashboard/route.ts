@@ -5,10 +5,17 @@ import {
   dataResponse,
   emptyDashboard,
   getAdminApiToken,
+  rateLimitRequest,
   requireAdminSession,
 } from "@/features/cms/server/api-helpers";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const limited = rateLimitRequest(request, { limit: 80 });
+
+  if (limited) {
+    return limited;
+  }
+
   const session = await requireAdminSession();
 
   if (!session) {

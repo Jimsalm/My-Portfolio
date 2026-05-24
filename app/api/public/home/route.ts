@@ -1,12 +1,23 @@
 import { fetchQuery } from "convex/nextjs";
 
 import { api } from "@/convex/_generated/api";
-import { dataResponse, routeError } from "@/features/cms/server/api-helpers";
+import {
+  dataResponse,
+  publicCacheHeaders,
+  rateLimitRequest,
+  routeError,
+} from "@/features/cms/server/api-helpers";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const limited = rateLimitRequest(request);
+
+  if (limited) {
+    return limited;
+  }
+
   try {
     const data = await fetchQuery(api.publicContent.home);
-    return dataResponse(data);
+    return dataResponse(data, { headers: publicCacheHeaders(60) });
   } catch (error) {
     return routeError(error);
   }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 import { ProjectCard } from "@/features/portfolio/components/project-card";
 import { EmptyState, SectionHeading, SectionShell } from "@/features/portfolio/components/ui-atoms";
@@ -25,7 +25,7 @@ export function ProjectsPage({ initialData }: { initialData: PublicProject[] }) 
 
   return (
     <SectionShell className="min-h-screen">
-      <SectionHeading description="query projects --status published --filter tech_stack">
+      <SectionHeading description="query projects --status published --filter tech_stack" level="h1">
         ./work
       </SectionHeading>
 
@@ -33,9 +33,10 @@ export function ProjectsPage({ initialData }: { initialData: PublicProject[] }) 
         {["All", ...tags].map((tag) => (
           <button
             className={cn(
-              "border px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] transition-colors",
+              "h-11 border px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] transition-colors",
               activeTag === tag ? "border-foreground bg-foreground text-background" : "text-muted-foreground hover:border-foreground",
             )}
+            aria-pressed={activeTag === tag}
             key={tag}
             onClick={() => setActiveTag(tag)}
             type="button"
@@ -46,7 +47,7 @@ export function ProjectsPage({ initialData }: { initialData: PublicProject[] }) 
       </div>
 
       {filteredProjects.length > 0 ? (
-        <motion.div
+        <m.div
           animate="visible"
           className="grid gap-6 lg:grid-cols-2"
           initial="hidden"
@@ -55,7 +56,7 @@ export function ProjectsPage({ initialData }: { initialData: PublicProject[] }) 
           {filteredProjects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
-        </motion.div>
+        </m.div>
       ) : (
         <EmptyState>No published projects match this filter.</EmptyState>
       )}
