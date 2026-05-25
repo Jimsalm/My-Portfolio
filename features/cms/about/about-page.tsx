@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { TagInput } from "@/features/cms/components/tag-input";
+import { SkillItemsEditor } from "@/features/cms/components/skill-items-editor";
 import { UploadField } from "@/features/cms/components/upload-field";
 import { useAbout, useUpdateAbout } from "@/features/cms/hooks/use-about";
 import {
@@ -201,7 +201,7 @@ export function AboutPage() {
                 control={form.control}
                 name={`skills.${index}.skills`}
                 render={({ field }) => (
-                  <TagInput label="Skill items" onChange={field.onChange} value={field.value} />
+                  <SkillItemsEditor onChange={field.onChange} value={field.value} />
                 )}
               />
             </div>

@@ -10,6 +10,15 @@ const uploadedFile = v.object({
 
 const nullableUploadedFile = v.union(uploadedFile, v.null());
 const status = v.union(v.literal("published"), v.literal("draft"));
+const skillItem = v.union(
+  v.string(),
+  v.object({
+    brandColor: v.string(),
+    iconSlug: v.string(),
+    id: v.string(),
+    name: v.string(),
+  }),
+);
 
 export default defineSchema({
   adminUsers: defineTable({
@@ -89,7 +98,7 @@ export default defineSchema({
           id: v.string(),
           name: v.string(),
           order: v.number(),
-          skills: v.array(v.string()),
+          skills: v.array(skillItem),
         }),
       ),
     ),

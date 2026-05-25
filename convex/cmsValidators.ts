@@ -47,11 +47,21 @@ export const socialLinks = v.object({
   website: v.string(),
 });
 
+export const skillItem = v.union(
+  v.string(),
+  v.object({
+    brandColor: v.string(),
+    iconSlug: v.string(),
+    id: v.string(),
+    name: v.string(),
+  }),
+);
+
 export const skillCategory = v.object({
   id: v.string(),
   name: v.string(),
   order: v.number(),
-  skills: v.array(v.string()),
+  skills: v.array(skillItem),
 });
 
 export const experienceEntry = v.object({

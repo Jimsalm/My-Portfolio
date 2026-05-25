@@ -120,11 +120,34 @@ export const socialLinksSchema = z.object({
   website: optionalUrlSchema,
 });
 
+const hexColorSchema = z
+  .string()
+  .trim()
+  .optional()
+  .default("")
+  .refine((value) => value === "" || /^#?[0-9a-fA-F]{6}$/.test(value), {
+    message: "Use a valid hex color.",
+  })
+  .transform(normalizeHexColor);
+
+const rawSkillItemSchema = z.union([
+  z.string().trim().min(1),
+  z.object({
+    brandColor: hexColorSchema,
+    iconSlug: z.string().trim().optional().default(""),
+    id: z.string().trim().optional().default(""),
+    name: z.string().trim().min(1, "Skill name is required."),
+  }),
+]);
+
 export const skillCategorySchema = z.object({
   id: z.string().min(1),
   name: z.string().trim().min(1, "Category name is required."),
   order: z.number().int().min(0),
-  skills: z.array(z.string().trim().min(1)).default([]),
+  skills: z
+    .array(rawSkillItemSchema)
+    .default([])
+    .transform((skills) => skills.map((skill, index) => normalizeSkillItem(skill, index))),
 });
 
 export const experienceSchema = z
@@ -174,6 +197,12 @@ export type UploadedFile = z.infer<typeof uploadedFileSchema>;
 export type ProjectFormValues = z.infer<typeof projectFormSchema>;
 export type BlogPostFormValues = z.infer<typeof blogPostFormSchema>;
 export type AboutFormValues = z.infer<typeof aboutFormSchema>;
+export type SkillItem = {
+  brandColor: string;
+  iconSlug: string;
+  id: string;
+  name: string;
+};
 
 export type Project = ProjectFormValues & {
   id: string;
@@ -206,6 +235,44 @@ export function slugify(value: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+export function normalizeHexColor(value?: string | null) {
+  const trimmed = value?.trim() ?? "";
+
+  if (!trimmed) {
+    return "";
+  }
+
+  const withoutHash = trimmed.replace(/^#/, "");
+  return /^([0-9a-fA-F]{6})$/.test(withoutHash) ? `#${withoutHash.toUpperCase()}` : trimmed;
+}
+
+export function normalizeSkillItem(
+  value:
+    | string
+    | {
+        brandColor?: string;
+        iconSlug?: string;
+        id?: string;
+        name: string;
+      },
+  index = 0,
+): SkillItem {
+  const raw = typeof value === "string" ? { name: value } : value;
+  const name = raw.name.trim();
+  const fallbackId = `${slugify(name) || "skill"}-${index}`;
+
+  return {
+    brandColor: normalizeHexColor(raw.brandColor),
+    iconSlug: raw.iconSlug?.trim() ?? "",
+    id: raw.id?.trim() || fallbackId,
+    name,
+  };
+}
+
+export function normalizeSkillItems(values: Array<SkillItem | string>) {
+  return values.map((value, index) => normalizeSkillItem(value, index));
 }
 
 export function calculateReadTime(content: string) {

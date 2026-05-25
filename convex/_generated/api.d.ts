@@ -15,6 +15,7 @@ import type * as cmsValidators from "../cmsValidators.js";
 import type * as dashboard from "../dashboard.js";
 import type * as projects from "../projects.js";
 import type * as publicContent from "../publicContent.js";
+import type * as skillUtils from "../skillUtils.js";
 
 import type {
   ApiFromModules,
@@ -30,6 +31,7 @@ declare const fullApi: ApiFromModules<{
   dashboard: typeof dashboard;
   projects: typeof projects;
   publicContent: typeof publicContent;
+  skillUtils: typeof skillUtils;
 }>;
 
 /**

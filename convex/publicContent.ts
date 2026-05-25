@@ -2,6 +2,7 @@ import { v } from "convex/values";
 
 import { query, type QueryCtx } from "./_generated/server";
 import type { Doc } from "./_generated/dataModel";
+import { normalizeSkillCategories } from "./skillUtils";
 
 function normalizeProject(project: Doc<"projects">) {
   return {
@@ -53,7 +54,7 @@ function normalizeAbout(about: Doc<"profile">) {
     resumeFile: about.resumeFile ?? null,
     role: about.role ?? "",
     shortBio: about.shortBio ?? "",
-    skills: about.skills ?? [],
+    skills: normalizeSkillCategories(about.skills ?? []),
     socialLinks: about.socialLinks ?? {
       github: "",
       linkedin: "",

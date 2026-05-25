@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import type { Doc } from "./_generated/dataModel";
 import { aboutInput, adminApiToken, assertAdminApiToken } from "./cmsValidators";
+import { normalizeSkillCategories } from "./skillUtils";
 
 function normalizeAbout(about: Doc<"profile">) {
   return {
@@ -15,7 +16,7 @@ function normalizeAbout(about: Doc<"profile">) {
     resumeFile: about.resumeFile ?? null,
     role: about.role ?? "",
     shortBio: about.shortBio ?? "",
-    skills: about.skills ?? [],
+    skills: normalizeSkillCategories(about.skills ?? []),
     socialLinks: about.socialLinks ?? {
       github: "",
       linkedin: "",

@@ -6,7 +6,8 @@ import dynamic from "next/dynamic";
 
 import { ExperienceTimeline } from "@/features/portfolio/components/experience-timeline";
 import { MediaFrame } from "@/features/portfolio/components/media-frame";
-import { IconButton, SectionHeading, SectionShell, Tag, TextButton } from "@/features/portfolio/components/ui-atoms";
+import { SkillsSection } from "@/features/portfolio/components/skills-section";
+import { IconButton, SectionHeading, SectionShell, TextButton } from "@/features/portfolio/components/ui-atoms";
 import { usePublicAbout } from "@/features/portfolio/hooks/use-public-data";
 import { fadeUp, motionTransition, staggerContainer } from "@/features/portfolio/lib/motion";
 import {
@@ -88,27 +89,7 @@ export function AboutPage({ initialData }: { initialData: PublicAbout | null }) 
       </SectionShell>
 
       <SectionShell className="pt-8">
-        <SectionHeading>./skills</SectionHeading>
-        {about?.skills.length ? (
-          <div className="grid gap-5 md:grid-cols-2">
-            {about.skills
-              .toSorted((a, b) => a.order - b.order)
-              .map((category) => (
-                <section className="border p-5" key={category.id}>
-                  <h3 className="font-mono font-semibold tracking-tight">{category.name}</h3>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {category.skills.map((skill) => (
-                      <Tag key={skill}>{skill}</Tag>
-                    ))}
-                  </div>
-                </section>
-              ))}
-          </div>
-        ) : (
-          <div className="border border-dashed p-10 text-center text-sm text-muted-foreground">
-            Skills will appear once they are added in the admin panel.
-          </div>
-        )}
+        <SkillsSection categories={about?.skills ?? []} />
       </SectionShell>
 
       <SectionShell className="pt-8">
