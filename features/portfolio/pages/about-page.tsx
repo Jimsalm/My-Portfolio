@@ -4,6 +4,7 @@ import { FileDown, Github, Globe, Linkedin, Mail, MapPin, Twitter } from "lucide
 import { m } from "framer-motion";
 import dynamic from "next/dynamic";
 
+import { ExperienceTimeline } from "@/features/portfolio/components/experience-timeline";
 import { MediaFrame } from "@/features/portfolio/components/media-frame";
 import { IconButton, SectionHeading, SectionShell, Tag, TextButton } from "@/features/portfolio/components/ui-atoms";
 import { usePublicAbout } from "@/features/portfolio/hooks/use-public-data";
@@ -112,29 +113,7 @@ export function AboutPage({ initialData }: { initialData: PublicAbout | null }) 
 
       <SectionShell className="pt-8">
         <SectionHeading>./experience</SectionHeading>
-        <div className="grid gap-4">
-          {about?.experience.length ? (
-            about.experience.map((entry) => (
-              <article className="grid gap-3 border p-5 md:grid-cols-[220px_1fr]" key={entry.id}>
-                <div className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                  {entry.startDate} - {entry.current ? "Present" : entry.endDate}
-                </div>
-                <div>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <h3 className="font-mono text-xl font-semibold tracking-tight">{entry.role}</h3>
-                    {entry.current ? <Tag>Current</Tag> : null}
-                  </div>
-                  <p className="mt-1 font-mono font-medium">{entry.company}</p>
-                  <p className="mt-3 font-mono text-sm leading-6 text-muted-foreground">{entry.description}</p>
-                </div>
-              </article>
-            ))
-          ) : (
-            <div className="border border-dashed p-10 text-center text-sm text-muted-foreground">
-              Experience entries will appear here.
-            </div>
-          )}
-        </div>
+        <ExperienceTimeline entries={about?.experience ?? []} />
       </SectionShell>
 
       <SectionShell className="grid gap-12 pt-8 lg:grid-cols-2">
