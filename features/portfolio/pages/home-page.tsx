@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FileDown, Github, Globe, Linkedin, Mail, Twitter } from "lucide-react";
 import { m } from "framer-motion";
 
+import { ContactForm } from "@/features/contact/components/contact-form";
 import { BlogCard } from "@/features/portfolio/components/blog-card";
 import { ProjectCard } from "@/features/portfolio/components/project-card";
 import { EditorPanel, IconButton, SectionHeading, SectionShell, TerminalPanel, TextButton } from "@/features/portfolio/components/ui-atoms";
@@ -147,25 +148,32 @@ export function HomePage({ initialData }: { initialData: PublicHomeData }) {
       </SectionShell>
 
       <SectionShell className="pb-28">
-        <TerminalPanel title="contact.sh">
-          <h2 className="max-w-3xl font-mono text-4xl font-semibold tracking-tight md:text-6xl">
-            ./start-conversation
-          </h2>
-          <p className="mt-5 max-w-2xl font-mono text-sm leading-7 text-muted-foreground">
-            Have a product, portfolio, or system that needs careful engineering? Send a note and I&apos;ll take a look.
-          </p>
-          <a className="mt-8 inline-flex break-all font-mono text-2xl font-semibold tracking-tight hover:underline md:text-4xl" href={`mailto:${email}`}>
-            mailto:{email}
-          </a>
-          <div className="mt-8 flex flex-wrap gap-2">
-            <IconButton href={`mailto:${email}`} icon={Mail} label="Email" />
-            {socialEntries(about).map((entry) => {
-              const Icon = socialIcons[entry.type as keyof typeof socialIcons] ?? Globe;
-              return <IconButton href={entry.href} icon={Icon} key={entry.type} label={entry.label} />;
-            })}
-            {about?.resumeFile?.url ? <IconButton href={about.resumeFile.url} icon={FileDown} label="Resume" /> : null}
-          </div>
-        </TerminalPanel>
+        <SectionHeading description="secure endpoint · resend email · protected by rate limit">
+          ./contact
+        </SectionHeading>
+        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <TerminalPanel title="contact.sh">
+            <p className="font-mono text-sm text-muted-foreground">{handle}:~/contact$ ./open-channel</p>
+            <h2 className="mt-5 max-w-3xl font-mono text-4xl font-semibold tracking-tight md:text-5xl">
+              let&apos;s build something careful.
+            </h2>
+            <p className="mt-5 max-w-2xl font-mono text-sm leading-7 text-muted-foreground">
+              Have a product, portfolio, or system that needs clean engineering? Send the brief here and it lands in my inbox.
+            </p>
+            <a className="mt-8 inline-flex break-all font-mono text-xl font-semibold tracking-tight hover:underline md:text-3xl" href={`mailto:${email}`}>
+              mailto:{email}
+            </a>
+            <div className="mt-8 flex flex-wrap gap-2">
+              <IconButton href={`mailto:${email}`} icon={Mail} label="Email" />
+              {socialEntries(about).map((entry) => {
+                const Icon = socialIcons[entry.type as keyof typeof socialIcons] ?? Globe;
+                return <IconButton href={entry.href} icon={Icon} key={entry.type} label={entry.label} />;
+              })}
+              {about?.resumeFile?.url ? <IconButton href={about.resumeFile.url} icon={FileDown} label="Resume" /> : null}
+            </div>
+          </TerminalPanel>
+          <ContactForm />
+        </div>
       </SectionShell>
     </>
   );
