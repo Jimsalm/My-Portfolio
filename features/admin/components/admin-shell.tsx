@@ -66,7 +66,7 @@ export function AdminShell({
   return (
     <LazyMotion features={domAnimation}>
       <div className="terminal-theme admin-terminal relative min-h-screen overflow-x-hidden bg-background font-mono text-foreground">
-        <MatrixRainBackground />
+        <MatrixRainBackground variant="admin" />
         <m.aside
           animate={{ opacity: 1, x: 0 }}
           className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r bg-background/90 backdrop-blur md:flex md:flex-col"

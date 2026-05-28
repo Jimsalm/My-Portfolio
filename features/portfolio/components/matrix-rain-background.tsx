@@ -2,8 +2,13 @@
 
 import { useEffect, useRef } from "react";
 
-export function MatrixRainBackground() {
+type MatrixRainBackgroundProps = {
+  variant?: "public" | "admin";
+};
+
+export function MatrixRainBackground({ variant = "public" }: MatrixRainBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const shouldAnimateCanvas = variant === "public";
 
   useEffect(() => {
     const canvasElement = canvasRef.current;
@@ -15,13 +20,19 @@ export function MatrixRainBackground() {
 
     const canvas = canvasElement;
     const context = canvasContext;
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mobileQuery = window.matchMedia("(max-width: 767px)");
     const glyphs = "01{}[]<>/\\|$#@*+-=~";
     const fontSize = 14;
     const rowHeight = 18;
     let drops: number[] = [];
     let animationFrame = 0;
+    let isAnimating = false;
     let lastPaint = 0;
+
+    function canAnimate() {
+      return shouldAnimateCanvas && !reducedMotionQuery.matches && !mobileQuery.matches;
+    }
 
     function resize() {
       const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
@@ -39,6 +50,7 @@ export function MatrixRainBackground() {
       const columns = Math.ceil(width / fontSize);
       drops = Array.from({ length: columns }, () => Math.floor(Math.random() * -30));
       paintFrame(true);
+      syncAnimation();
     }
 
     function paintFrame(force = false) {
@@ -70,39 +82,75 @@ export function MatrixRainBackground() {
     }
 
     function animate(time: number) {
-      if (!mediaQuery.matches && time - lastPaint > 48) {
+      if (time - lastPaint > 48) {
         paintFrame();
         lastPaint = time;
       }
 
-      animationFrame = window.requestAnimationFrame(animate);
+      if (canAnimate()) {
+        animationFrame = window.requestAnimationFrame(animate);
+      } else {
+        isAnimating = false;
+      }
+    }
+
+    function syncAnimation() {
+      if (!canAnimate()) {
+        if (animationFrame) {
+          window.cancelAnimationFrame(animationFrame);
+          animationFrame = 0;
+        }
+
+        isAnimating = false;
+        return;
+      }
+
+      if (!isAnimating) {
+        isAnimating = true;
+        animationFrame = window.requestAnimationFrame(animate);
+      }
     }
 
     resize();
     window.addEventListener("resize", resize);
-    animationFrame = window.requestAnimationFrame(animate);
+    reducedMotionQuery.addEventListener("change", syncAnimation);
+    mobileQuery.addEventListener("change", resize);
+    syncAnimation();
 
     return () => {
-      window.cancelAnimationFrame(animationFrame);
+      if (animationFrame) {
+        window.cancelAnimationFrame(animationFrame);
+      }
+
       window.removeEventListener("resize", resize);
+      reducedMotionQuery.removeEventListener("change", syncAnimation);
+      mobileQuery.removeEventListener("change", resize);
     };
-  }, []);
+  }, [shouldAnimateCanvas]);
 
   return (
     <>
       <canvas
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-0 opacity-25"
+        className={variant === "admin" ? "pointer-events-none fixed inset-0 z-0 opacity-10" : "pointer-events-none fixed inset-0 z-0 hidden opacity-25 md:block"}
         id="portfolio-matrix-rain"
         ref={canvasRef}
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_center,transparent_42%,rgb(0_0_0/0.78)_100%),linear-gradient(to_bottom,rgb(255_255_255/0.045),transparent_14%,transparent_86%,rgb(255_255_255/0.04))]"
+        className={
+          variant === "admin"
+            ? "pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_center,transparent_46%,rgb(0_0_0/0.9)_100%),linear-gradient(to_bottom,rgb(255_255_255/0.025),transparent_18%,transparent_84%,rgb(255_255_255/0.025))]"
+            : "pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_center,transparent_42%,rgb(0_0_0/0.78)_100%),linear-gradient(to_bottom,rgb(255_255_255/0.045),transparent_14%,transparent_86%,rgb(255_255_255/0.04))]"
+        }
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(to_bottom,transparent_0,transparent_23px,rgb(255_255_255/0.045)_24px),linear-gradient(to_right,transparent_0,transparent_23px,rgb(255_255_255/0.04)_24px)] bg-[length:24px_24px] opacity-25"
+        className={
+          variant === "admin"
+            ? "pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(to_bottom,transparent_0,transparent_23px,rgb(255_255_255/0.025)_24px),linear-gradient(to_right,transparent_0,transparent_23px,rgb(255_255_255/0.02)_24px)] bg-[length:24px_24px] opacity-20"
+            : "pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(to_bottom,transparent_0,transparent_23px,rgb(255_255_255/0.045)_24px),linear-gradient(to_right,transparent_0,transparent_23px,rgb(255_255_255/0.04)_24px)] bg-[length:24px_24px] opacity-25"
+        }
       />
     </>
   );
