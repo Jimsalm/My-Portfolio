@@ -1,7 +1,6 @@
 "use client";
 
 import axios, { type AxiosError, type AxiosRequestConfig } from "axios";
-import { getSession } from "next-auth/react";
 import { toast } from "sonner";
 
 export type ApiResponse<T> = {
@@ -35,16 +34,6 @@ export const apiClient = axios.create({
     "Content-Type": "application/json",
   },
   withCredentials: true,
-});
-
-apiClient.interceptors.request.use(async (config) => {
-  const session = await getSession();
-
-  if (session?.user?.id) {
-    config.headers.set("x-admin-session", session.user.id);
-  }
-
-  return config;
 });
 
 apiClient.interceptors.response.use(
