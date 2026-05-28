@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LazyMotion, domAnimation } from "framer-motion";
+import { LazyMotion, domAnimation, m } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
@@ -29,77 +29,82 @@ export function PortfolioShell({
   const profileName = getProfileName(about);
 
   return (
-    <div className="terminal-theme relative min-h-screen overflow-x-hidden bg-background text-foreground">
-      <MatrixRainBackground />
-      <a className="skip-link" href="#main-content">
-        skip to main content
-      </a>
-      <header className="fixed inset-x-0 top-0 z-40 border-b bg-background/85 font-mono backdrop-blur">
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5">
-          <Link className="inline-flex h-11 items-center text-sm font-semibold tracking-tight" href="/" onClick={() => setIsOpen(false)}>
-            {profileHandle}:~$
-          </Link>
-
-          <nav className="hidden items-center gap-8 text-sm md:flex">
-            {navItems.map((item) => (
-              <NavLink
-                active={pathname === item.href || pathname.startsWith(`${item.href}/`)}
-                href={item.href}
-                key={item.href}
-              >
-                <span className="text-muted-foreground">{item.index}</span>
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
-
-          <button
-            aria-expanded={isOpen}
-            aria-label="Toggle navigation"
-            className="inline-flex size-11 items-center justify-center border md:hidden"
-            onClick={() => setIsOpen((current) => !current)}
-            type="button"
-          >
-            {isOpen ? <X aria-hidden="true" className="size-4" /> : <Menu aria-hidden="true" className="size-4" />}
-          </button>
-        </div>
-
-        <div
-          className={cn(
-            "grid border-t transition-[grid-template-rows] duration-300 md:hidden",
-            isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
-          )}
+    <LazyMotion features={domAnimation}>
+      <div className="terminal-theme relative min-h-screen overflow-x-hidden bg-background text-foreground">
+        <MatrixRainBackground />
+        <a className="skip-link" href="#main-content">
+          skip to main content
+        </a>
+        <m.header
+          animate={{ opacity: 1, y: 0 }}
+          className="fixed inset-x-0 top-0 z-40 border-b bg-background/85 font-mono backdrop-blur"
+          initial={{ opacity: 0, y: -16 }}
+          transition={{ duration: 0.38, ease: "easeOut" }}
         >
-          <nav className="overflow-hidden font-mono">
-            <div className="mx-auto flex max-w-6xl flex-col px-5 py-3 text-sm">
+          <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5">
+            <Link className="inline-flex h-11 items-center text-sm font-semibold tracking-tight" href="/" onClick={() => setIsOpen(false)}>
+              {profileHandle}:~$
+            </Link>
+
+            <nav className="hidden items-center gap-8 text-sm md:flex">
               {navItems.map((item) => (
-                <Link
-                  className={cn(
-                    "border-b py-4",
-                    pathname === item.href || pathname.startsWith(`${item.href}/`)
-                      ? "font-semibold"
-                      : "text-muted-foreground",
-                  )}
+                <NavLink
+                  active={pathname === item.href || pathname.startsWith(`${item.href}/`)}
                   href={item.href}
                   key={item.href}
-                  onClick={() => setIsOpen(false)}
                 >
-                  <span className="mr-3 text-muted-foreground">{item.index}</span>
+                  <span className="text-muted-foreground">{item.index}</span>
                   {item.label}
-                </Link>
+                </NavLink>
               ))}
-            </div>
-          </nav>
-        </div>
-      </header>
+            </nav>
 
-      <LazyMotion features={domAnimation}>
+            <button
+              aria-expanded={isOpen}
+              aria-label="Toggle navigation"
+              className="inline-flex size-11 items-center justify-center border md:hidden"
+              onClick={() => setIsOpen((current) => !current)}
+              type="button"
+            >
+              {isOpen ? <X aria-hidden="true" className="size-4" /> : <Menu aria-hidden="true" className="size-4" />}
+            </button>
+          </div>
+
+          <div
+            className={cn(
+              "grid border-t transition-[grid-template-rows] duration-300 md:hidden",
+              isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+            )}
+          >
+            <nav className="overflow-hidden font-mono">
+              <div className="mx-auto flex max-w-6xl flex-col px-5 py-3 text-sm">
+                {navItems.map((item) => (
+                  <Link
+                    className={cn(
+                      "border-b py-4",
+                      pathname === item.href || pathname.startsWith(`${item.href}/`)
+                        ? "font-semibold"
+                        : "text-muted-foreground",
+                    )}
+                    href={item.href}
+                    key={item.href}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <span className="mr-3 text-muted-foreground">{item.index}</span>
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </nav>
+          </div>
+        </m.header>
+
         <main className="relative z-10 pt-16" id="main-content">
           {children}
         </main>
-      </LazyMotion>
-      <Footer profileHandle={profileHandle} profileName={profileName} />
-    </div>
+        <Footer profileHandle={profileHandle} profileName={profileName} />
+      </div>
+    </LazyMotion>
   );
 }
 
@@ -121,7 +126,13 @@ function NavLink({
       href={href}
     >
       {children}
-      {active ? <span className="absolute inset-x-0 -bottom-px h-px bg-foreground" /> : null}
+      {active ? (
+        <m.span
+          className="absolute inset-x-0 -bottom-px h-px bg-foreground"
+          layoutId="portfolio-active-nav"
+          transition={{ duration: 0.25, ease: "easeOut" }}
+        />
+      ) : null}
     </Link>
   );
 }
@@ -136,7 +147,13 @@ function Footer({
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative z-10 border-t bg-background/85 font-mono backdrop-blur">
+    <m.footer
+      className="relative z-10 border-t bg-background/85 font-mono backdrop-blur"
+      initial={{ opacity: 0, y: 16 }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
+      viewport={{ amount: 0.2, once: true }}
+      whileInView={{ opacity: 1, y: 0 }}
+    >
       <div className="mx-auto grid max-w-6xl gap-8 px-5 py-10 md:grid-cols-[1fr_auto] md:items-end">
         <div>
           <p className="font-semibold tracking-tight">{profileHandle}:~/exit$</p>
@@ -157,6 +174,6 @@ function Footer({
           <span>© {year}</span>
         </div>
       </div>
-    </footer>
+    </m.footer>
   );
 }

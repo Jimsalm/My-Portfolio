@@ -26,6 +26,7 @@ export function BlogCard({
       )}
       variants={fadeUp}
       transition={motionTransition}
+      whileHover={{ y: -4, scale: 1.01 }}
     >
       <div className={cn("border-b px-4 py-2 font-mono text-xs text-muted-foreground", compact ? "md:col-span-2" : "")}>
         log@portfolio:~/writing$ open {post.slug}.md

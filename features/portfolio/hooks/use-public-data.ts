@@ -18,7 +18,7 @@ export function usePublicHome(initialData?: PublicHomeData) {
     initialData,
     queryFn: () => apiRequest<PublicHomeData>({ method: "GET", url: "/api/public/home" }),
     queryKey: portfolioQueryKeys.home,
-    refetchOnMount: "always",
+    refetchOnMount: false,
   });
 }
 
@@ -27,7 +27,7 @@ export function usePublicProjects(initialData?: PublicProject[]) {
     initialData,
     queryFn: () => apiRequest<PublicProject[]>({ method: "GET", url: "/api/public/projects" }),
     queryKey: portfolioQueryKeys.projects,
-    refetchOnMount: "always",
+    refetchOnMount: false,
   });
 }
 
@@ -40,7 +40,7 @@ export function usePublicProject(slug: string, initialData?: PublicProjectDetail
         url: `/api/public/projects/${slug}`,
       }),
     queryKey: portfolioQueryKeys.project(slug),
-    refetchOnMount: "always",
+    refetchOnMount: false,
   });
 }
 
@@ -49,7 +49,7 @@ export function usePublicBlogPosts(initialData?: PublicBlogPost[]) {
     initialData,
     queryFn: () => apiRequest<PublicBlogPost[]>({ method: "GET", url: "/api/public/blog" }),
     queryKey: portfolioQueryKeys.blogPosts,
-    refetchOnMount: "always",
+    refetchOnMount: false,
   });
 }
 
@@ -62,7 +62,7 @@ export function usePublicBlogPost(slug: string, initialData?: PublicBlogPostDeta
         url: `/api/public/blog/${slug}`,
       }),
     queryKey: portfolioQueryKeys.blogPost(slug),
-    refetchOnMount: "always",
+    refetchOnMount: false,
   });
 }
 
@@ -71,6 +71,6 @@ export function usePublicAbout(initialData?: PublicAbout | null) {
     initialData,
     queryFn: () => apiRequest<PublicAbout | null>({ method: "GET", url: "/api/public/about" }),
     queryKey: portfolioQueryKeys.about,
-    refetchOnMount: "always",
+    refetchOnMount: false,
   });
 }

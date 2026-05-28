@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Session } from "next-auth";
+import { LazyMotion, domAnimation, m } from "framer-motion";
 import {
   BookOpenText,
   BriefcaseBusiness,
@@ -63,14 +64,25 @@ export function AdminShell({
   const initials = getInitials(adminName);
 
   return (
-    <div className="terminal-theme admin-terminal relative min-h-screen overflow-x-hidden bg-background font-mono text-foreground">
-      <MatrixRainBackground />
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r bg-background/90 backdrop-blur md:flex md:flex-col">
-        <SidebarContent pathname={pathname} />
-      </aside>
+    <LazyMotion features={domAnimation}>
+      <div className="terminal-theme admin-terminal relative min-h-screen overflow-x-hidden bg-background font-mono text-foreground">
+        <MatrixRainBackground />
+        <m.aside
+          animate={{ opacity: 1, x: 0 }}
+          className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r bg-background/90 backdrop-blur md:flex md:flex-col"
+          initial={{ opacity: 0, x: -18 }}
+          transition={{ duration: 0.38, ease: "easeOut" }}
+        >
+          <SidebarContent pathname={pathname} />
+        </m.aside>
 
-      <div className="relative z-10 flex min-h-screen flex-col md:pl-64">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b bg-background/90 px-4 backdrop-blur md:px-6">
+        <div className="relative z-10 flex min-h-screen flex-col md:pl-64">
+          <m.header
+            animate={{ opacity: 1, y: 0 }}
+            className="sticky top-0 z-20 flex h-16 items-center justify-between border-b bg-background/90 px-4 backdrop-blur md:px-6"
+            initial={{ opacity: 0, y: -14 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+          >
           <div className="flex min-w-0 items-center gap-3">
             <Sheet>
               <SheetTrigger asChild>
@@ -120,7 +132,7 @@ export function AdminShell({
               </AvatarFallback>
             </Avatar>
           </div>
-        </header>
+        </m.header>
 
         <main className="flex-1 px-4 py-5 md:px-6 md:py-6">
           <nav
@@ -150,8 +162,9 @@ export function AdminShell({
           </nav>
           {children}
         </main>
+        </div>
       </div>
-    </div>
+    </LazyMotion>
   );
 }
 

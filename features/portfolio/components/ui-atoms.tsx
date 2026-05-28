@@ -1,13 +1,52 @@
+"use client";
+
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
+import { m, useInView, useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { motionTransition } from "@/features/portfolio/lib/motion";
+
+function useTypewriter(text: string, active: boolean, delay = 0, speed = 28) {
+  const shouldReduceMotion = useReducedMotion();
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (shouldReduceMotion || !active || count >= text.length) {
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setCount((currentCount) => Math.min(currentCount + 1, text.length));
+    }, count === 0 ? delay : speed);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [active, count, delay, shouldReduceMotion, speed, text.length]);
+
+  return shouldReduceMotion ? text : text.slice(0, count);
+}
+
+function TerminalCursor({ active }: { active: boolean }) {
+  return active ? (
+    <span
+      aria-hidden="true"
+      className="ml-1 inline-block h-[1em] w-2 animate-pulse bg-foreground align-[-0.12em]"
+    />
+  ) : null;
+}
 
 export function SectionShell({
   children,
   className,
 }: Readonly<{ children: React.ReactNode; className?: string }>) {
-  return <section className={cn("relative mx-auto w-full max-w-6xl px-5 py-20", className)}>{children}</section>;
+  return (
+    <section className={cn("relative mx-auto w-full max-w-6xl px-5 py-20", className)}>
+      {children}
+    </section>
+  );
 }
 
 export function SectionHeading({
@@ -20,15 +59,42 @@ export function SectionHeading({
   level?: "h1" | "h2";
 }) {
   const Heading = level;
+  const ref = useRef<HTMLDivElement | null>(null);
+  const inView = useInView(ref, { amount: 0.5, once: true });
+  const labelText = "$ portfolio --section";
+  const titleText = typeof children === "string" ? children : "";
+  const label = useTypewriter(labelText, inView, 40, 10);
+  const title = useTypewriter(titleText, inView, 220, 22);
+  const labelDone = label.length >= labelText.length;
+  const titleDone = !titleText || title.length >= titleText.length;
 
   return (
-    <div className="mb-10 flex flex-col gap-3">
+    <m.div
+      className="mb-10 flex flex-col gap-3"
+      initial={{ opacity: 0, y: 12 }}
+      ref={ref}
+      transition={{ ...motionTransition, delay: 0.08 }}
+      viewport={{ amount: 0.5, once: true }}
+      whileInView={{ opacity: 1, y: 0 }}
+    >
       <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
-        $ portfolio --section
+        {label}
+        <TerminalCursor active={inView && !labelDone} />
       </p>
-      <Heading className="font-mono text-3xl font-semibold tracking-tight md:text-5xl">{children}</Heading>
-      {description ? <p className="max-w-2xl font-mono text-sm leading-7 text-muted-foreground">{description}</p> : null}
-    </div>
+      <Heading aria-label={titleText || undefined} className="font-mono text-3xl font-semibold tracking-tight md:text-5xl">
+        {titleText ? title : children}
+        <TerminalCursor active={inView && labelDone && !titleDone} />
+      </Heading>
+      {description ? (
+        <m.p
+          animate={titleDone ? { opacity: 1, y: 0 } : { opacity: 0, y: 6 }}
+          className="max-w-2xl font-mono text-sm leading-7 text-muted-foreground"
+          transition={motionTransition}
+        >
+          {description}
+        </m.p>
+      ) : null}
+    </m.div>
   );
 }
 
@@ -55,8 +121,10 @@ export function TextButton({
       rel={target === "_blank" ? "noreferrer" : undefined}
       target={target}
     >
-      <span className="mr-2 text-muted-foreground">$</span>
-      {children}
+      <m.span className="inline-flex items-center" whileHover={{ x: 2 }} whileTap={{ scale: 0.98 }}>
+        <span className="mr-2 text-muted-foreground">$</span>
+        {children}
+      </m.span>
     </Link>
   );
 }
@@ -82,24 +150,35 @@ export function IconButton({
       rel="noreferrer"
       target="_blank"
     >
-      <Icon aria-hidden="true" className="size-4" />
+      <m.span whileHover={{ rotate: -4, scale: 1.08 }} whileTap={{ scale: 0.94 }}>
+        <Icon aria-hidden="true" className="size-4" />
+      </m.span>
     </Link>
   );
 }
 
 export function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex border bg-background px-2 py-1 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+    <m.span
+      className="inline-flex border bg-background px-2 py-1 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground"
+      whileHover={{ y: -1 }}
+    >
       {children}
-    </span>
+    </m.span>
   );
 }
 
 export function EmptyState({ children }: { children: React.ReactNode }) {
   return (
-    <div className="border border-dashed bg-background p-10 font-mono text-sm text-muted-foreground">
+    <m.div
+      className="border border-dashed bg-background p-10 font-mono text-sm text-muted-foreground"
+      initial={{ opacity: 0, y: 12 }}
+      transition={motionTransition}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ amount: 0.4, once: true }}
+    >
       <span className="text-foreground">empty:</span> {children}
-    </div>
+    </m.div>
   );
 }
 
@@ -108,13 +187,20 @@ export function TerminalPanel({
   title,
 }: Readonly<{ children: React.ReactNode; title: string }>) {
   return (
-    <div className="border bg-background">
+    <m.div
+      className="border bg-background"
+      initial={{ opacity: 0, y: 18 }}
+      transition={motionTransition}
+      viewport={{ amount: 0.3, once: true }}
+      whileInView={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -2 }}
+    >
       <div className="flex items-center justify-between border-b px-4 py-2 font-mono text-xs text-muted-foreground">
         <span>{title}</span>
         <span>zsh · 80x24</span>
       </div>
       <div className="p-5">{children}</div>
-    </div>
+    </m.div>
   );
 }
 
@@ -126,7 +212,14 @@ export function EditorPanel({
   lines: React.ReactNode[];
 }>) {
   return (
-    <div className="border bg-background font-mono">
+    <m.div
+      className="border bg-background font-mono"
+      initial={{ opacity: 0, y: 18 }}
+      transition={motionTransition}
+      viewport={{ amount: 0.3, once: true }}
+      whileInView={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -2 }}
+    >
       <div className="flex items-center justify-between border-b px-3 py-2 text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
           <span className="size-2 border bg-muted" aria-hidden="true" />
@@ -155,6 +248,6 @@ export function EditorPanel({
         <span>main</span>
         <span>utf-8 · typescript · ln 1, col 1</span>
       </div>
-    </div>
+    </m.div>
   );
 }

@@ -179,8 +179,8 @@ function SkillCategoryCard({
 export function SkillsSection({ categories }: { categories: RuntimeSkillCategory[] }) {
   const ref = useRef<HTMLElement | null>(null);
   const inView = useInView(ref, { amount: 0.2, once: true });
-  const label = useTypewriter("$ PORTFOLIO --SECTION", inView, 80, 22);
-  const title = useTypewriter("./skills", inView, 680, 46);
+  const label = useTypewriter("$ PORTFOLIO --SECTION", inView, 40, 10);
+  const title = useTypewriter("./skills", inView, 220, 22);
   const sortedCategories = useMemo(
     () =>
       categories
