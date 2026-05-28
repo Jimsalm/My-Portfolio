@@ -8,6 +8,7 @@ import { useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { MatrixRainBackground } from "@/features/portfolio/components/matrix-rain-background";
+import { WipBadge } from "@/features/portfolio/components/wip-badge";
 import { usePublicAbout } from "@/features/portfolio/hooks/use-public-data";
 import { getProfileHandle, getProfileName } from "@/features/portfolio/lib/utils";
 import type { PublicAbout } from "@/features/portfolio/types";
@@ -32,6 +33,7 @@ export function PortfolioShell({
     <LazyMotion features={domAnimation}>
       <div className="terminal-theme relative min-h-screen overflow-x-hidden bg-background text-foreground">
         <MatrixRainBackground />
+        <WipBadge />
         <a className="skip-link" href="#main-content">
           skip to main content
         </a>
