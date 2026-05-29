@@ -4,11 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LazyMotion, domAnimation, m } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { MatrixRainBackground } from "@/features/portfolio/components/matrix-rain-background";
 import { TerminalMagneticCursor } from "@/features/portfolio/components/terminal-magnetic-cursor";
+import { TerminalPreloader } from "@/features/portfolio/components/terminal-preloader";
 import { WipBadge } from "@/features/portfolio/components/wip-badge";
 import { usePublicAbout } from "@/features/portfolio/hooks/use-public-data";
 import { getProfileHandle, getProfileName } from "@/features/portfolio/lib/utils";
@@ -26,23 +27,28 @@ export function PortfolioShell({
 }: Readonly<{ children: React.ReactNode; initialAbout: PublicAbout | null }>) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [isBootComplete, setIsBootComplete] = useState(false);
   const { data: about = initialAbout } = usePublicAbout(initialAbout);
   const profileHandle = getProfileHandle(about);
   const profileName = getProfileName(about);
+  const handleBootComplete = useCallback(() => {
+    setIsBootComplete(true);
+  }, []);
 
   return (
     <LazyMotion features={domAnimation}>
       <div className="terminal-theme relative min-h-screen overflow-x-hidden bg-background text-foreground">
         <MatrixRainBackground />
+        <TerminalPreloader onComplete={handleBootComplete} />
         <TerminalMagneticCursor />
         <WipBadge />
         <a className="skip-link" href="#main-content">
           skip to main content
         </a>
         <m.header
-          animate={{ opacity: 1, y: 0 }}
+          animate={isBootComplete ? { opacity: 1, y: 0 } : { opacity: 0, y: -16 }}
           className="fixed inset-x-0 top-0 z-40 border-b bg-background/85 font-mono backdrop-blur"
-          initial={{ opacity: 0, y: -16 }}
+          initial={false}
           transition={{ duration: 0.38, ease: "easeOut" }}
         >
           <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5">
@@ -103,9 +109,19 @@ export function PortfolioShell({
           </div>
         </m.header>
 
-        <main className="relative z-10 pt-16" id="main-content">
+        <m.main
+          animate={
+            isBootComplete
+              ? { filter: "blur(0px)", opacity: 1, y: 0 }
+              : { filter: "blur(3px)", opacity: 0, y: 20 }
+          }
+          className="relative z-10 pt-16"
+          id="main-content"
+          initial={false}
+          transition={{ delay: 0.08, duration: 0.55, ease: "easeOut" }}
+        >
           {children}
-        </main>
+        </m.main>
         <Footer profileHandle={profileHandle} profileName={profileName} />
       </div>
     </LazyMotion>
