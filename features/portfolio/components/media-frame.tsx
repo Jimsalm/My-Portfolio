@@ -11,6 +11,7 @@ type MediaFrameProps = {
   alt: string;
   className?: string;
   image: UploadedFile | null | undefined;
+  imageClassName?: string;
   priority?: boolean;
   sizes?: string;
 };
@@ -37,6 +38,7 @@ export function MediaFrame({
   alt,
   className,
   image,
+  imageClassName,
   priority,
   sizes = "(min-width: 1024px) 50vw, 100vw",
 }: MediaFrameProps) {
@@ -50,7 +52,7 @@ export function MediaFrame({
         <Image
           alt={alt}
           blurDataURL={image?.blurDataURL ?? fallbackBlurDataURL}
-          className="object-cover"
+          className={cn("object-cover", imageClassName)}
           fill
           onError={() => setFailedSources((currentSources) => [...currentSources, src])}
           placeholder="blur"

@@ -45,12 +45,19 @@ export function AboutPage({ initialData }: { initialData: PublicAbout | null }) 
       <SectionShell>
         <m.div
           animate="visible"
-          className="grid gap-10 lg:grid-cols-[320px_1fr] lg:items-end"
+          className="grid gap-10 lg:grid-cols-[420px_1fr] lg:items-center"
           initial="hidden"
           variants={staggerContainer}
         >
           <m.div variants={fadeUp}>
-            <MediaFrame alt={name} className="aspect-square" image={about?.profilePhoto ?? null} priority sizes="(min-width: 1024px) 320px, 100vw" />
+            <MediaFrame
+              alt={name}
+              className="aspect-[4/5]"
+              image={about?.profilePhoto ?? null}
+              imageClassName="object-top"
+              priority
+              sizes="(min-width: 1024px) 420px, 100vw"
+            />
           </m.div>
           <m.div variants={fadeUp} transition={motionTransition}>
             <p className="font-mono text-sm text-muted-foreground">whoami --verbose</p>
