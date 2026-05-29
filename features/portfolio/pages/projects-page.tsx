@@ -29,21 +29,39 @@ export function ProjectsPage({ initialData }: { initialData: PublicProject[] }) 
         ./work
       </SectionHeading>
 
-      <div className="mb-8 flex flex-wrap gap-2 border bg-background p-3">
-        {["All", ...tags].map((tag) => (
-          <button
-            className={cn(
-              "h-11 border px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] transition-colors",
-              activeTag === tag ? "border-foreground bg-foreground text-background" : "text-muted-foreground hover:border-foreground",
-            )}
-            aria-pressed={activeTag === tag}
-            key={tag}
-            onClick={() => setActiveTag(tag)}
-            type="button"
-          >
-            --{tag.toLowerCase()}
-          </button>
-        ))}
+      <div className="mb-8 border-y bg-background/70 py-4 font-mono">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3 px-1 text-xs text-muted-foreground">
+          <span>
+            <span className="text-foreground">portfolio:~/work$</span> filter --stack
+          </span>
+          <span>{filteredProjects.length.toString().padStart(2, "0")} results</span>
+        </div>
+        <div className="-mx-5 overflow-x-auto px-5 md:mx-0 md:overflow-visible md:px-1">
+          <div className="flex min-w-max gap-2 md:min-w-0 md:flex-wrap">
+            {["All", ...tags].map((tag) => {
+              const isActive = activeTag === tag;
+
+              return (
+                <button
+                  aria-pressed={isActive}
+                  className={cn(
+                    "h-8 max-w-44 shrink-0 border px-3 font-mono text-[11px] uppercase tracking-[0.12em] transition-colors",
+                    "overflow-hidden text-ellipsis whitespace-nowrap",
+                    isActive
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border text-muted-foreground hover:border-foreground hover:text-foreground",
+                  )}
+                  key={tag}
+                  onClick={() => setActiveTag(tag)}
+                  title={`Filter by ${tag}`}
+                  type="button"
+                >
+                  {tag === "All" ? "all" : tag.toLowerCase()}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {filteredProjects.length > 0 ? (
