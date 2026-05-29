@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description: aboutDescription(about),
     keywords: [getProfileName(about), "about", "resume", "software engineer"],
     path: "/about",
-    title: `${getProfileName(about)} About`,
+    title: "About",
   });
 }
 

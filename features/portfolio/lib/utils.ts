@@ -2,7 +2,7 @@ import type { PublicAbout, PublicBlogPost, PublicProject } from "@/features/port
 
 export const defaultProfile = {
   email: "hello@example.com",
-  fullName: "Portfolio",
+  fullName: "Jimiel Salmon",
   role: "Full Stack Developer",
   shortBio: "Building thoughtful web experiences with clean systems and careful details.",
 };

@@ -9,19 +9,19 @@ export const metadata: Metadata = {
   openGraph: {
     description: "Public portfolio, projects, writing, and admin-managed profile.",
     images: [{ url: getOgImageUrl() }],
-    siteName: "Portfolio",
-    title: "Portfolio",
+    siteName: "Jimiel Salmon",
+    title: "Jimiel Salmon | Portfolio",
     type: "website",
   },
   title: {
-    default: "Portfolio",
-    template: "%s | Portfolio",
+    default: "Jimiel Salmon | Portfolio",
+    template: "Jimiel Salmon | %s",
   },
   twitter: {
     card: "summary_large_image",
     description: "Public portfolio, projects, writing, and admin-managed profile.",
     images: [{ url: getOgImageUrl() }],
-    title: "Portfolio",
+    title: "Jimiel Salmon | Portfolio",
   },
 };
 

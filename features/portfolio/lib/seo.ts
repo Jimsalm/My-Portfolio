@@ -12,7 +12,7 @@ import {
   socialEntries,
 } from "@/features/portfolio/lib/utils";
 
-const siteName = "Portfolio";
+const siteName = "Jimiel Salmon";
 const defaultDescription = "Portfolio of selected projects, writing, and professional profile.";
 const defaultKeywords = ["portfolio", "software engineer", "projects", "blog", "full stack developer"];
 
@@ -40,7 +40,7 @@ export function buildMetadata({
   type = "website",
 }: SeoMetadataInput): Metadata {
   const canonical = absoluteUrl(path);
-  const resolvedTitle = title === siteName ? siteName : `${title} | ${siteName}`;
+  const resolvedTitle = title === siteName ? siteName : `${siteName} | ${title}`;
   const images = [{ url: image || getOgImageUrl({ title }) }];
 
   return {
