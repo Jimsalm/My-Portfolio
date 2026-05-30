@@ -194,6 +194,7 @@
 }
 
 .admin-terminal [data-slot="button"],
+.admin-terminal [data-slot="card"],
 .admin-terminal [data-slot="input"],
 .admin-terminal [data-slot="textarea"],
 .admin-terminal [data-slot="select-trigger"],

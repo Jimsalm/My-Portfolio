@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import type { PublicAbout, PublicBlogPost, PublicProject } from "@/features/portfolio/types";
+import type { PublicSiteSettings } from "@/features/settings/schemas";
 import {
   absoluteUrl,
   formatDisplayDate,
@@ -21,6 +22,7 @@ type SeoMetadataInput = {
   image?: string | null;
   keywords?: string[];
   path: string;
+  settings?: PublicSiteSettings | null;
   title: string;
   type?: "article" | "website";
 };
@@ -32,25 +34,30 @@ export function getOgImageUrl(params?: Record<string, string>) {
 }
 
 export function buildMetadata({
-  description = defaultDescription,
+  description,
   image,
   keywords = defaultKeywords,
   path,
+  settings,
   title,
   type = "website",
 }: SeoMetadataInput): Metadata {
+  const resolvedSiteName = settings?.siteTitle || siteName;
+  const resolvedDescription =
+    description || settings?.metaDescription || settings?.tagline || defaultDescription;
   const canonical = absoluteUrl(path);
-  const resolvedTitle = title === siteName ? siteName : `${siteName} | ${title}`;
+  const resolvedTitle =
+    title === resolvedSiteName ? resolvedSiteName : `${resolvedSiteName} | ${title}`;
   const images = [{ url: image || getOgImageUrl({ title }) }];
 
   return {
     alternates: { canonical },
-    description,
+    description: resolvedDescription,
     keywords,
     openGraph: {
-      description,
+      description: resolvedDescription,
       images,
-      siteName,
+      siteName: resolvedSiteName,
       title: resolvedTitle,
       type,
       url: canonical,
@@ -58,7 +65,7 @@ export function buildMetadata({
     title: { absolute: resolvedTitle },
     twitter: {
       card: "summary_large_image",
-      description,
+      description: resolvedDescription,
       images,
       title: resolvedTitle,
     },

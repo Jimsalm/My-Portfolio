@@ -13,6 +13,7 @@ import {
   getPublicBlogPost,
   getPublicBlogSlugs,
   safePublicAbout,
+  safePublicSettings,
 } from "@/features/portfolio/server/public-data";
 
 export const revalidate = 30;
@@ -34,6 +35,7 @@ export async function generateMetadata({
   params,
 }: PublicBlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
+  const settings = await safePublicSettings();
 
   try {
     const { post } = await getPublicBlogPost(slug);
@@ -43,6 +45,7 @@ export async function generateMetadata({
         ...buildMetadata({
           description: "The requested blog post could not be found.",
           path: `/blog/${slug}`,
+          settings,
           title: "Post Not Found",
         }),
         robots: { follow: false, index: false },
@@ -54,6 +57,7 @@ export async function generateMetadata({
       image: getOgImageUrl({ slug: post.slug, type: "blog" }),
       keywords: ["blog", ...post.tags],
       path: `/blog/${post.slug}`,
+      settings,
       title: post.title,
       type: "article",
     });
@@ -61,6 +65,7 @@ export async function generateMetadata({
     return buildMetadata({
       description: "Blog post from the portfolio.",
       path: `/blog/${slug}`,
+      settings,
       title: "Blog Post",
       type: "article",
     });

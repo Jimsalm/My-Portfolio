@@ -11,6 +11,7 @@ import type {
   PublicProject,
   PublicProjectDetailData,
 } from "@/features/portfolio/types";
+import type { PublicSiteSettings } from "@/features/settings/schemas";
 
 export async function getPublicHome(): Promise<PublicHomeData> {
   return await fetchQuery(api.api.publicContent.home);
@@ -44,6 +45,10 @@ export async function getPublicAbout(): Promise<PublicAbout | null> {
   return await fetchQuery(api.api.publicContent.about);
 }
 
+export async function getPublicSettings(): Promise<PublicSiteSettings> {
+  return await fetchQuery(api.api.settings.getPublicSettings);
+}
+
 export async function safePublicHome(): Promise<PublicHomeData> {
   try {
     return await getPublicHome();
@@ -71,6 +76,14 @@ export async function safePublicBlogPosts(): Promise<PublicBlogPost[]> {
 export async function safePublicAbout(): Promise<PublicAbout | null> {
   try {
     return await getPublicAbout();
+  } catch {
+    return null;
+  }
+}
+
+export async function safePublicSettings(): Promise<PublicSiteSettings | null> {
+  try {
+    return await getPublicSettings();
   } catch {
     return null;
   }

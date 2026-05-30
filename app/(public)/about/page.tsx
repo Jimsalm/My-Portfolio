@@ -8,17 +8,24 @@ import {
   personJsonLd,
 } from "@/features/portfolio/lib/seo";
 import { getProfileName } from "@/features/portfolio/lib/utils";
-import { safePublicAbout } from "@/features/portfolio/server/public-data";
+import {
+  safePublicAbout,
+  safePublicSettings,
+} from "@/features/portfolio/server/public-data";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const about = await safePublicAbout();
+  const [about, settings] = await Promise.all([
+    safePublicAbout(),
+    safePublicSettings(),
+  ]);
 
   return buildMetadata({
     description: aboutDescription(about),
     keywords: [getProfileName(about), "about", "resume", "software engineer"],
     path: "/about",
+    settings,
     title: "About",
   });
 }

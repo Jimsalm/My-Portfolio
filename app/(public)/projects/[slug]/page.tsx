@@ -11,6 +11,7 @@ import {
 import {
   getPublicProject,
   getPublicProjectSlugs,
+  safePublicSettings,
 } from "@/features/portfolio/server/public-data";
 
 export const revalidate = 60;
@@ -32,6 +33,7 @@ export async function generateMetadata({
   params,
 }: PublicProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
+  const settings = await safePublicSettings();
 
   try {
     const { project } = await getPublicProject(slug);
@@ -41,6 +43,7 @@ export async function generateMetadata({
         ...buildMetadata({
           description: "The requested project could not be found.",
           path: `/projects/${slug}`,
+          settings,
           title: "Project Not Found",
         }),
         robots: { follow: false, index: false },
@@ -52,12 +55,14 @@ export async function generateMetadata({
       image: getOgImageUrl({ slug: project.slug, type: "project" }),
       keywords: ["project", ...project.techStack],
       path: `/projects/${project.slug}`,
+      settings,
       title: project.title,
     });
   } catch {
     return buildMetadata({
       description: "Project details from the portfolio.",
       path: `/projects/${slug}`,
+      settings,
       title: "Project",
     });
   }

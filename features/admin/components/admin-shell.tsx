@@ -36,6 +36,7 @@ import {
   getInitials,
 } from "@/features/admin/lib/admin-profile";
 import { MatrixRainBackground } from "@/features/portfolio/components/matrix-rain-background";
+import { useAdminSettings } from "@/features/settings/hooks/use-settings";
 import { cn } from "@/lib/utils";
 
 type AdminShellProps = {
@@ -60,7 +61,10 @@ export function AdminShell({
   const pathname = usePathname();
   const pageTitle = getAdminRouteLabel(pathname);
   const breadcrumbs = getAdminBreadcrumbs(pathname);
-  const adminName = getAdminDisplayName(session.user?.email);
+  const { data: settings } = useAdminSettings();
+  const adminEmail = settings?.account.email || session.user?.email;
+  const adminName =
+    settings?.account.displayName || getAdminDisplayName(adminEmail);
   const initials = getInitials(adminName);
 
   return (
@@ -123,7 +127,7 @@ export function AdminShell({
               <p className="text-xs text-muted-foreground">{currentDateLabel}</p>
               <p className="mt-1 text-sm font-semibold leading-none">{adminName}</p>
               <p className="mt-1 text-[11px] text-muted-foreground">
-                {session.user?.email}
+                {adminEmail}
               </p>
             </div>
             <Avatar className="rounded-none border" size="lg">

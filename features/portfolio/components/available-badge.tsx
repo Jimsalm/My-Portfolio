@@ -1,14 +1,14 @@
 "use client";
 
-import { GitBranch, Wrench } from "lucide-react";
+import { CircleCheck, GitBranch } from "lucide-react";
 import { m } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 
-export function WipBadge({ preview = false }: { preview?: boolean }) {
+export function AvailableBadge({ preview = false }: { preview?: boolean }) {
   return (
     <m.aside
-      aria-label="Site status: work in progress"
+      aria-label="Site status: open to work"
       className={cn(
         "max-w-[calc(100vw-2rem)] overflow-hidden border bg-background/90 font-mono text-foreground shadow-[0_0_24px_rgb(255_255_255/0.06)] backdrop-blur",
         preview ? "relative w-full max-w-md" : "fixed bottom-4 right-4 z-50",
@@ -26,7 +26,7 @@ export function WipBadge({ preview = false }: { preview?: boolean }) {
       />
       <div className="flex items-center gap-3 px-3 py-2">
         <span className="relative flex size-8 items-center justify-center border bg-foreground text-background" aria-hidden="true">
-          <Wrench className="size-4" />
+          <CircleCheck className="size-4" />
         </span>
         <div className="min-w-0">
           <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
@@ -36,13 +36,13 @@ export function WipBadge({ preview = false }: { preview?: boolean }) {
               className="size-1.5 bg-foreground"
               transition={{ duration: 1.2, ease: "easeInOut", repeat: Infinity }}
             />
-            status
+            available
           </p>
-          <p className="truncate text-xs font-semibold sm:text-sm">work in progress</p>
+          <p className="truncate text-xs font-semibold sm:text-sm">open to work</p>
         </div>
         <span className="hidden items-center gap-1 border-l pl-3 text-[11px] uppercase tracking-[0.12em] text-muted-foreground sm:inline-flex">
           <GitBranch className="size-3" aria-hidden="true" />
-          iterating
+          hiring
         </span>
       </div>
     </m.aside>

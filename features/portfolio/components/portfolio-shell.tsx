@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 import { useCallback, useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { AvailableBadge } from "@/features/portfolio/components/available-badge";
 import { MatrixRainBackground } from "@/features/portfolio/components/matrix-rain-background";
 import { TerminalMagneticCursor } from "@/features/portfolio/components/terminal-magnetic-cursor";
 import { TerminalPreloader } from "@/features/portfolio/components/terminal-preloader";
@@ -14,6 +15,8 @@ import { WipBadge } from "@/features/portfolio/components/wip-badge";
 import { usePublicAbout } from "@/features/portfolio/hooks/use-public-data";
 import { getProfileHandle, getProfileName } from "@/features/portfolio/lib/utils";
 import type { PublicAbout } from "@/features/portfolio/types";
+import { usePublicSettings } from "@/features/settings/hooks/use-settings";
+import type { PublicSiteSettings } from "@/features/settings/schemas";
 
 const navItems = [
   { href: "/projects", index: "01", label: "WORK" },
@@ -24,11 +27,17 @@ const navItems = [
 export function PortfolioShell({
   children,
   initialAbout,
-}: Readonly<{ children: React.ReactNode; initialAbout: PublicAbout | null }>) {
+  initialSettings,
+}: Readonly<{
+  children: React.ReactNode;
+  initialAbout: PublicAbout | null;
+  initialSettings: PublicSiteSettings | null;
+}>) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isBootComplete, setIsBootComplete] = useState(false);
   const { data: about = initialAbout } = usePublicAbout(initialAbout);
+  const { data: settings = initialSettings } = usePublicSettings(initialSettings ?? undefined);
   const profileHandle = getProfileHandle(about);
   const profileName = getProfileName(about);
   const handleBootComplete = useCallback(() => {
@@ -41,7 +50,8 @@ export function PortfolioShell({
         <MatrixRainBackground />
         <TerminalPreloader onComplete={handleBootComplete} />
         <TerminalMagneticCursor />
-        <WipBadge />
+        {settings?.badgeMode === "available" ? <AvailableBadge /> : null}
+        {(settings?.badgeMode ?? "wip") === "wip" ? <WipBadge /> : null}
         <a className="skip-link" href="#main-content">
           skip to main content
         </a>

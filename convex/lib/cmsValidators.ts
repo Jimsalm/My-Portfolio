@@ -4,6 +4,12 @@ export const adminApiToken = v.string();
 
 export const status = v.union(v.literal("published"), v.literal("draft"));
 
+export const badgeMode = v.union(
+  v.literal("wip"),
+  v.literal("available"),
+  v.literal("hidden"),
+);
+
 export const uploadedFile = v.object({
   blurDataURL: v.optional(v.string()),
   key: v.string(),
@@ -96,6 +102,27 @@ export const aboutInput = v.object({
   shortBio: v.string(),
   skills: v.array(skillCategory),
   socialLinks,
+});
+
+export const accountSettingsInput = v.object({
+  currentPassword: v.optional(v.string()),
+  displayName: v.string(),
+  email: v.string(),
+});
+
+export const passwordSettingsInput = v.object({
+  currentPassword: v.string(),
+  newPassword: v.string(),
+});
+
+export const siteSettingsInput = v.object({
+  metaDescription: v.string(),
+  siteTitle: v.string(),
+  tagline: v.string(),
+});
+
+export const badgeSettingsInput = v.object({
+  badgeMode,
 });
 
 export function assertAdminApiToken(token: string) {
