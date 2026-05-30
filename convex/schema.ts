@@ -65,6 +65,8 @@ export default defineSchema({
       v.array(
         v.object({
           degree: v.string(),
+          gpa: v.optional(v.string()),
+          honors: v.optional(v.string()),
           id: v.string(),
           school: v.string(),
           year: v.string(),

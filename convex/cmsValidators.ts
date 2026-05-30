@@ -76,6 +76,8 @@ export const experienceEntry = v.object({
 
 export const educationEntry = v.object({
   degree: v.string(),
+  gpa: v.optional(v.string()),
+  honors: v.optional(v.string()),
   id: v.string(),
   school: v.string(),
   year: v.string(),

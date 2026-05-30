@@ -175,6 +175,8 @@ export const educationSchema = z.object({
   school: z.string().trim().min(1, "School is required."),
   degree: z.string().trim().min(1, "Degree is required."),
   year: z.string().trim().regex(/^\d{4}$/, "Use a four-digit year."),
+  honors: z.string().trim().max(120, "Honors should be 120 characters or less.").optional().default(""),
+  gpa: z.string().trim().max(40, "GPA should be 40 characters or less.").optional().default(""),
 });
 
 export const aboutFormSchema = z.object({

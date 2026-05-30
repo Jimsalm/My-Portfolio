@@ -115,6 +115,12 @@ export function AboutPage({ initialData }: { initialData: PublicAbout | null }) 
                   <p className="mt-2 font-mono text-sm text-muted-foreground">
                     {entry.degree} · {entry.year}
                   </p>
+                  {entry.gpa || entry.honors ? (
+                    <div className="mt-4 flex flex-wrap gap-2 font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                      {entry.gpa ? <span className="border px-2 py-1">GPA {entry.gpa}</span> : null}
+                      {entry.honors ? <span className="border px-2 py-1">{entry.honors}</span> : null}
+                    </div>
+                  ) : null}
                 </article>
               ))
             ) : (

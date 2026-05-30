@@ -303,6 +303,8 @@ export function AboutPage() {
             onClick={() =>
               educationFields.append({
                 degree: "",
+                gpa: "",
+                honors: "",
                 id: crypto.randomUUID(),
                 school: "",
                 year: "",
@@ -316,7 +318,7 @@ export function AboutPage() {
           </Button>
         </div>
         {educationFields.fields.map((field, index) => (
-          <div className="grid gap-3 border p-3 lg:grid-cols-[1fr_1fr_120px_auto]" key={field.id}>
+          <div className="grid gap-3 border p-3 lg:grid-cols-[1fr_1fr_120px_140px_auto]" key={field.id}>
             <Field label="School" error={form.formState.errors.education?.[index]?.school?.message}>
               <Input
                 aria-invalid={Boolean(form.formState.errors.education?.[index]?.school)}
@@ -341,9 +343,25 @@ export function AboutPage() {
                 {...form.register(`education.${index}.year`)}
               />
             </Field>
+            <Field label="GPA" error={form.formState.errors.education?.[index]?.gpa?.message}>
+              <Input
+                aria-invalid={Boolean(form.formState.errors.education?.[index]?.gpa)}
+                className="rounded-none"
+                placeholder="3.80"
+                {...form.register(`education.${index}.gpa`)}
+              />
+            </Field>
             <Button className="rounded-none" onClick={() => educationFields.remove(index)} type="button" variant="outline">
               Remove
             </Button>
+            <Field className="lg:col-span-5" label="Honors" error={form.formState.errors.education?.[index]?.honors?.message}>
+              <Input
+                aria-invalid={Boolean(form.formState.errors.education?.[index]?.honors)}
+                className="rounded-none"
+                placeholder="Dean's Lister, Cum Laude, Academic Excellence"
+                {...form.register(`education.${index}.honors`)}
+              />
+            </Field>
           </div>
         ))}
       </section>

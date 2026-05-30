@@ -6,7 +6,11 @@ import { normalizeSkillCategories } from "./skillUtils";
 function normalizeAbout(about: Doc<"profile">) {
   return {
     id: about._id,
-    education: about.education ?? [],
+    education: (about.education ?? []).map((entry) => ({
+      ...entry,
+      gpa: entry.gpa ?? "",
+      honors: entry.honors ?? "",
+    })),
     email: about.email ?? "",
     experience: about.experience ?? [],
     fullName: about.fullName ?? "",
