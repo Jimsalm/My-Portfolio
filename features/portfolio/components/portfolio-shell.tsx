@@ -37,7 +37,7 @@ export function PortfolioShell({
 
   return (
     <LazyMotion features={domAnimation}>
-      <div className="terminal-theme relative min-h-screen overflow-x-hidden bg-background text-foreground">
+      <div className="terminal-theme relative min-h-screen bg-background text-foreground">
         <MatrixRainBackground />
         <TerminalPreloader onComplete={handleBootComplete} />
         <TerminalMagneticCursor />
