@@ -13,35 +13,35 @@ import type {
 } from "@/features/portfolio/types";
 
 export async function getPublicHome(): Promise<PublicHomeData> {
-  return await fetchQuery(api.publicContent.home);
+  return await fetchQuery(api.api.publicContent.home);
 }
 
 export async function getPublicProjects(): Promise<PublicProject[]> {
-  return await fetchQuery(api.publicContent.projects);
+  return await fetchQuery(api.api.publicContent.projects);
 }
 
 export async function getPublicProject(slug: string): Promise<PublicProjectDetailData> {
-  return await fetchQuery(api.publicContent.projectBySlug, { slug });
+  return await fetchQuery(api.api.publicContent.projectBySlug, { slug });
 }
 
 export async function getPublicProjectSlugs(): Promise<string[]> {
-  return await fetchQuery(api.publicContent.projectSlugs);
+  return await fetchQuery(api.api.publicContent.projectSlugs);
 }
 
 export async function getPublicBlogPosts(): Promise<PublicBlogPost[]> {
-  return await fetchQuery(api.publicContent.blogPosts);
+  return await fetchQuery(api.api.publicContent.blogPosts);
 }
 
 export async function getPublicBlogPost(slug: string): Promise<PublicBlogPostDetailData> {
-  return await fetchQuery(api.publicContent.blogPostBySlug, { slug });
+  return await fetchQuery(api.api.publicContent.blogPostBySlug, { slug });
 }
 
 export async function getPublicBlogSlugs(): Promise<string[]> {
-  return await fetchQuery(api.publicContent.blogSlugs);
+  return await fetchQuery(api.api.publicContent.blogSlugs);
 }
 
 export async function getPublicAbout(): Promise<PublicAbout | null> {
-  return await fetchQuery(api.publicContent.about);
+  return await fetchQuery(api.api.publicContent.about);
 }
 
 export async function safePublicHome(): Promise<PublicHomeData> {

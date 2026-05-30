@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
   try {
     const body = (await parseJson(request)) as { ids?: string[] };
-    const data = await fetchMutation(api.projects.bulkDelete, {
+    const data = await fetchMutation(api.api.projects.bulkDelete, {
       adminApiToken: getAdminApiToken(),
       ids: (body.ids ?? []) as Array<Id<"projects">>,
     });

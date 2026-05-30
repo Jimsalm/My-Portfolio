@@ -25,7 +25,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const data = await fetchQuery(api.blog.list, {
+    const data = await fetchQuery(api.api.blog.list, {
       adminApiToken: getAdminApiToken(),
     });
 
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
 
   try {
     const input = blogPostFormSchema.parse(await parseJson(request));
-    const data = await fetchMutation(api.blog.create, {
+    const data = await fetchMutation(api.api.blog.create, {
       adminApiToken: getAdminApiToken(),
       input,
     });

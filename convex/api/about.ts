@@ -1,7 +1,7 @@
-import { mutation, query } from "./_generated/server";
-import type { Doc } from "./_generated/dataModel";
-import { aboutInput, adminApiToken, assertAdminApiToken } from "./cmsValidators";
-import { normalizeSkillCategories } from "./skillUtils";
+import { mutation, query } from "../_generated/server";
+import type { Doc } from "../_generated/dataModel";
+import { aboutInput, adminApiToken, assertAdminApiToken } from "../lib/cmsValidators";
+import { normalizeSkillCategories } from "../lib/skillUtils";
 
 function normalizeAbout(about: Doc<"profile">) {
   return {

@@ -23,7 +23,7 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const admin = await fetchAction(api.admin.authenticateAdmin, {
+        const admin = await fetchAction(api.api.admin.authenticateAdmin, {
           email,
           password,
         });

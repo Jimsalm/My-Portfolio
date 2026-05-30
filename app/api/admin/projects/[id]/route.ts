@@ -31,7 +31,7 @@ export async function GET(request: Request, context: RouteContext) {
 
   try {
     const { id } = await context.params;
-    const data = await fetchQuery(api.projects.get, {
+    const data = await fetchQuery(api.api.projects.get, {
       adminApiToken: getAdminApiToken(),
       id: id as Id<"projects">,
     });
@@ -58,7 +58,7 @@ export async function PUT(request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;
     const input = projectFormSchema.parse(await parseJson(request));
-    const data = await fetchMutation(api.projects.update, {
+    const data = await fetchMutation(api.api.projects.update, {
       adminApiToken: getAdminApiToken(),
       id: id as Id<"projects">,
       input,
@@ -85,7 +85,7 @@ export async function DELETE(request: Request, context: RouteContext) {
 
   try {
     const { id } = await context.params;
-    const data = await fetchMutation(api.projects.remove, {
+    const data = await fetchMutation(api.api.projects.remove, {
       adminApiToken: getAdminApiToken(),
       id: id as Id<"projects">,
     });

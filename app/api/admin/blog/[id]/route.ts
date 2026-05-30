@@ -31,7 +31,7 @@ export async function GET(request: Request, context: RouteContext) {
 
   try {
     const { id } = await context.params;
-    const data = await fetchQuery(api.blog.get, {
+    const data = await fetchQuery(api.api.blog.get, {
       adminApiToken: getAdminApiToken(),
       id: id as Id<"blogPosts">,
     });
@@ -58,7 +58,7 @@ export async function PUT(request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;
     const input = blogPostFormSchema.parse(await parseJson(request));
-    const data = await fetchMutation(api.blog.update, {
+    const data = await fetchMutation(api.api.blog.update, {
       adminApiToken: getAdminApiToken(),
       id: id as Id<"blogPosts">,
       input,
@@ -85,7 +85,7 @@ export async function DELETE(request: Request, context: RouteContext) {
 
   try {
     const { id } = await context.params;
-    const data = await fetchMutation(api.blog.remove, {
+    const data = await fetchMutation(api.api.blog.remove, {
       adminApiToken: getAdminApiToken(),
       id: id as Id<"blogPosts">,
     });

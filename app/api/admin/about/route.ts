@@ -25,7 +25,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const data = await fetchQuery(api.about.get, {
+    const data = await fetchQuery(api.api.about.get, {
       adminApiToken: getAdminApiToken(),
     });
 
@@ -50,7 +50,7 @@ export async function PUT(request: Request) {
 
   try {
     const input = aboutFormSchema.parse(await parseJson(request));
-    const data = await fetchMutation(api.about.upsert, {
+    const data = await fetchMutation(api.api.about.upsert, {
       adminApiToken: getAdminApiToken(),
       input,
     });

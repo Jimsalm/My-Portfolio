@@ -22,7 +22,7 @@ export async function GET(_request: Request, { params }: PublicBlogPostRouteProp
 
   try {
     const { slug } = await params;
-    const data = await fetchQuery(api.publicContent.blogPostBySlug, { slug });
+    const data = await fetchQuery(api.api.publicContent.blogPostBySlug, { slug });
     if (!data.post) {
       return errorResponse("Blog post not found.", 404);
     }

@@ -32,7 +32,7 @@ export async function PATCH(request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;
     const body = (await parseJson(request)) as { status?: unknown };
-    const data = await fetchMutation(api.projects.toggleStatus, {
+    const data = await fetchMutation(api.api.projects.toggleStatus, {
       adminApiToken: getAdminApiToken(),
       id: id as Id<"projects">,
       status: contentStatusSchema.parse(body.status),

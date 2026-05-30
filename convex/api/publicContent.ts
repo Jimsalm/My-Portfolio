@@ -1,8 +1,8 @@
 import { v } from "convex/values";
 
-import { query, type QueryCtx } from "./_generated/server";
-import type { Doc } from "./_generated/dataModel";
-import { normalizeSkillCategories } from "./skillUtils";
+import type { Doc } from "../_generated/dataModel";
+import { query, type QueryCtx } from "../_generated/server";
+import { normalizeSkillCategories } from "../lib/skillUtils";
 
 function normalizeProject(project: Doc<"projects">) {
   return {

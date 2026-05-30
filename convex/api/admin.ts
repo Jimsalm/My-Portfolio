@@ -1,9 +1,9 @@
 import bcrypt from "bcryptjs";
 import { v } from "convex/values";
 
-import { action, internalMutation, internalQuery } from "./_generated/server";
-import { internal } from "./_generated/api";
-import type { Doc } from "./_generated/dataModel";
+import { internal } from "../_generated/api";
+import type { Doc } from "../_generated/dataModel";
+import { action, internalMutation, internalQuery } from "../_generated/server";
 
 type AuthenticatedAdmin = {
   id: string;
@@ -19,7 +19,7 @@ export const authenticateAdmin = action({
   handler: async (ctx, args): Promise<AuthenticatedAdmin | null> => {
     const email = args.email.trim().toLowerCase();
     const admin: Doc<"adminUsers"> | null = await ctx.runQuery(
-      internal.admin.getAdminByEmail,
+      internal.api.admin.getAdminByEmail,
       { email },
     );
 
@@ -60,7 +60,7 @@ export const seedAdmin = action({
     const email = args.email.trim().toLowerCase();
     const passwordHash = await bcrypt.hash(args.password, 12);
 
-    await ctx.runMutation(internal.admin.upsertSingleAdmin, {
+    await ctx.runMutation(internal.api.admin.upsertSingleAdmin, {
       email,
       passwordHash,
     });

@@ -49,7 +49,7 @@ if (missingKeys.length > 0) {
 }
 
 const client = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
-const seedAdmin = makeFunctionReference("admin:seedAdmin");
+const seedAdmin = makeFunctionReference("api/admin:seedAdmin");
 
 const result = await client.action(seedAdmin, {
   email: process.env.ADMIN_EMAIL,

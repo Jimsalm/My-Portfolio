@@ -8,14 +8,18 @@
  * @module
  */
 
-import type * as about from "../about.js";
-import type * as admin from "../admin.js";
-import type * as blog from "../blog.js";
-import type * as cmsValidators from "../cmsValidators.js";
-import type * as dashboard from "../dashboard.js";
-import type * as projects from "../projects.js";
-import type * as publicContent from "../publicContent.js";
-import type * as skillUtils from "../skillUtils.js";
+import type * as api_about from "../api/about.js";
+import type * as api_admin from "../api/admin.js";
+import type * as api_blog from "../api/blog.js";
+import type * as api_dashboard from "../api/dashboard.js";
+import type * as api_projects from "../api/projects.js";
+import type * as api_publicContent from "../api/publicContent.js";
+import type * as lib_cmsValidators from "../lib/cmsValidators.js";
+import type * as lib_skillUtils from "../lib/skillUtils.js";
+import type * as schema_adminUsers from "../schema/adminUsers.js";
+import type * as schema_blogPosts from "../schema/blogPosts.js";
+import type * as schema_profile from "../schema/profile.js";
+import type * as schema_projects from "../schema/projects.js";
 
 import type {
   ApiFromModules,
@@ -24,14 +28,18 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  about: typeof about;
-  admin: typeof admin;
-  blog: typeof blog;
-  cmsValidators: typeof cmsValidators;
-  dashboard: typeof dashboard;
-  projects: typeof projects;
-  publicContent: typeof publicContent;
-  skillUtils: typeof skillUtils;
+  "api/about": typeof api_about;
+  "api/admin": typeof api_admin;
+  "api/blog": typeof api_blog;
+  "api/dashboard": typeof api_dashboard;
+  "api/projects": typeof api_projects;
+  "api/publicContent": typeof api_publicContent;
+  "lib/cmsValidators": typeof lib_cmsValidators;
+  "lib/skillUtils": typeof lib_skillUtils;
+  "schema/adminUsers": typeof schema_adminUsers;
+  "schema/blogPosts": typeof schema_blogPosts;
+  "schema/profile": typeof schema_profile;
+  "schema/projects": typeof schema_projects;
 }>;
 
 /**

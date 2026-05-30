@@ -23,7 +23,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const data = await fetchQuery(api.dashboard.getOverview, {
+    const data = await fetchQuery(api.api.dashboard.getOverview, {
       adminApiToken: getAdminApiToken(),
     });
 

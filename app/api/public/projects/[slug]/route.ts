@@ -22,7 +22,7 @@ export async function GET(_request: Request, { params }: PublicProjectRouteProps
 
   try {
     const { slug } = await params;
-    const data = await fetchQuery(api.publicContent.projectBySlug, { slug });
+    const data = await fetchQuery(api.api.publicContent.projectBySlug, { slug });
     if (!data.project) {
       return errorResponse("Project not found.", 404);
     }

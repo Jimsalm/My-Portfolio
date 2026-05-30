@@ -1,13 +1,13 @@
 import { v } from "convex/values";
 
-import { mutation, query } from "./_generated/server";
-import type { Doc } from "./_generated/dataModel";
+import type { Doc } from "../_generated/dataModel";
+import { mutation, query } from "../_generated/server";
 import {
   adminApiToken,
   assertAdminApiToken,
   blogPostInput,
   status,
-} from "./cmsValidators";
+} from "../lib/cmsValidators";
 
 function normalizeBlogPost(post: Doc<"blogPosts">) {
   return {

@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const data = await fetchQuery(api.publicContent.blogPosts);
+    const data = await fetchQuery(api.api.publicContent.blogPosts);
     return dataResponse(data, { headers: publicCacheHeaders(30) });
   } catch (error) {
     return routeError(error);

@@ -1,5 +1,5 @@
-import { query } from "./_generated/server";
-import { adminApiToken, assertAdminApiToken } from "./cmsValidators";
+import { query } from "../_generated/server";
+import { adminApiToken, assertAdminApiToken } from "../lib/cmsValidators";
 
 type RecentItem = {
   id: string;
