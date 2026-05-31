@@ -23,6 +23,9 @@ export const metadata: Metadata = {
     images: [{ url: getOgImageUrl() }],
     title: "Jimiel Salmon | Portfolio",
   },
+  verification: {
+    google: "c1466GaDIlhH7UxbahxYBIMRpkcl0mn3Nly9SyFyJRE",
+  },
 };
 
 export default function RootLayout({
