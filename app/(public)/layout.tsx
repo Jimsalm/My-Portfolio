@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/next";
+
 import { PortfolioShell } from "@/features/portfolio/components/portfolio-shell";
 import {
   safePublicAbout,
@@ -11,8 +13,11 @@ export default async function PublicLayout({ children }: Readonly<{ children: Re
   ]);
 
   return (
-    <PortfolioShell initialAbout={about} initialSettings={settings}>
-      {children}
-    </PortfolioShell>
+    <>
+      <PortfolioShell initialAbout={about} initialSettings={settings}>
+        {children}
+      </PortfolioShell>
+      <Analytics />
+    </>
   );
 }
