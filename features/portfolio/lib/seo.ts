@@ -91,6 +91,24 @@ export function personJsonLd(about: PublicAbout | null) {
   };
 }
 
+export function websiteJsonLd(
+  about: PublicAbout | null,
+  settings: PublicSiteSettings | null,
+) {
+  const profileName = getProfileName(about);
+  const resolvedSiteName = settings?.siteTitle || profileName;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    alternateName: resolvedSiteName === profileName ? undefined : profileName,
+    description:
+      settings?.metaDescription || settings?.tagline || getProfileBio(about),
+    name: resolvedSiteName,
+    url: absoluteUrl("/"),
+  };
+}
+
 export function projectJsonLd(project: PublicProject) {
   return {
     "@context": "https://schema.org",

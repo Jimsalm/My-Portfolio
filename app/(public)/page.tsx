@@ -1,5 +1,9 @@
 import { HomePage } from "@/features/portfolio/pages/home-page";
-import { buildMetadata } from "@/features/portfolio/lib/seo";
+import {
+  buildMetadata,
+  jsonLdScriptProps,
+  websiteJsonLd,
+} from "@/features/portfolio/lib/seo";
 import {
   safePublicHome,
   safePublicSettings,
@@ -18,6 +22,15 @@ export async function generateMetadata() {
 }
 
 export default async function PublicHomePage() {
-  const data = await safePublicHome();
-  return <HomePage initialData={data} />;
+  const [data, settings] = await Promise.all([
+    safePublicHome(),
+    safePublicSettings(),
+  ]);
+
+  return (
+    <>
+      <script {...jsonLdScriptProps(websiteJsonLd(data.about, settings))} />
+      <HomePage initialData={data} />
+    </>
+  );
 }
