@@ -7,6 +7,7 @@ import { LazyMotion, domAnimation, m } from "framer-motion";
 import {
   BookOpenText,
   BriefcaseBusiness,
+  Award,
   FileUser,
   LayoutDashboard,
   Menu,
@@ -49,6 +50,7 @@ const navIcons = {
   Dashboard: LayoutDashboard,
   Projects: BriefcaseBusiness,
   "Blog Posts": BookOpenText,
+  Certifications: Award,
   "About/Resume": FileUser,
   Settings,
 } as const;

@@ -5,10 +5,14 @@ import { m } from "framer-motion";
 import dynamic from "next/dynamic";
 
 import { ExperienceTimeline } from "@/features/portfolio/components/experience-timeline";
+import { CertificationSection } from "@/features/portfolio/components/certification-section";
 import { MediaFrame } from "@/features/portfolio/components/media-frame";
 import { SkillsSection } from "@/features/portfolio/components/skills-section";
 import { IconButton, SectionHeading, SectionShell, TextButton } from "@/features/portfolio/components/ui-atoms";
-import { usePublicAbout } from "@/features/portfolio/hooks/use-public-data";
+import {
+  usePublicAbout,
+  usePublicCertifications,
+} from "@/features/portfolio/hooks/use-public-data";
 import { fadeUp, motionTransition, staggerContainer } from "@/features/portfolio/lib/motion";
 import {
   getProfileBio,
@@ -18,6 +22,7 @@ import {
   socialEntries,
 } from "@/features/portfolio/lib/utils";
 import type { PublicAbout } from "@/features/portfolio/types";
+import type { Certification } from "@/features/certifications/schemas";
 
 const socialIcons = {
   github: Github,
@@ -33,8 +38,16 @@ const MarkdownRenderer = dynamic(
   },
 );
 
-export function AboutPage({ initialData }: { initialData: PublicAbout | null }) {
+export function AboutPage({
+  initialCertifications,
+  initialData,
+}: {
+  initialCertifications: Certification[];
+  initialData: PublicAbout | null;
+}) {
   const { data: about = initialData } = usePublicAbout(initialData);
+  const { data: certifications = initialCertifications } =
+    usePublicCertifications(initialCertifications);
   const name = getProfileName(about);
   const role = getProfileRole(about);
   const bio = getProfileBio(about);
@@ -104,30 +117,35 @@ export function AboutPage({ initialData }: { initialData: PublicAbout | null }) 
         <ExperienceTimeline entries={about?.experience ?? []} />
       </SectionShell>
 
-      <SectionShell className="grid gap-12 pt-8 lg:grid-cols-2">
-        <section>
-          <SectionHeading>./education</SectionHeading>
-          <div className="grid gap-3">
-            {about?.education.length ? (
-              about.education.map((entry) => (
-                <article className="border p-5" key={entry.id}>
-                  <p className="font-mono font-semibold tracking-tight">{entry.school}</p>
-                  <p className="mt-2 font-mono text-sm text-muted-foreground">
-                    {entry.degree} · {entry.year}
-                  </p>
-                  {entry.gpa || entry.honors ? (
-                    <div className="mt-4 flex flex-wrap gap-2 font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
-                      {entry.gpa ? <span className="border px-2 py-1">GPA {entry.gpa}</span> : null}
-                      {entry.honors ? <span className="border px-2 py-1">{entry.honors}</span> : null}
-                    </div>
-                  ) : null}
-                </article>
-              ))
-            ) : (
-              <div className="border border-dashed p-10 text-sm text-muted-foreground">Education entries will appear here.</div>
-            )}
-          </div>
-        </section>
+      <SectionShell className="pt-8">
+        <SectionHeading>./education</SectionHeading>
+        <div className="grid gap-3 lg:grid-cols-2">
+          {about?.education.length ? (
+            about.education.map((entry) => (
+              <article className="border p-5" key={entry.id}>
+                <p className="font-mono font-semibold tracking-tight">{entry.school}</p>
+                <p className="mt-2 font-mono text-sm text-muted-foreground">
+                  {entry.degree} · {entry.year}
+                </p>
+                {entry.gpa || entry.honors ? (
+                  <div className="mt-4 flex flex-wrap gap-2 font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                    {entry.gpa ? <span className="border px-2 py-1">GPA {entry.gpa}</span> : null}
+                    {entry.honors ? <span className="border px-2 py-1">{entry.honors}</span> : null}
+                  </div>
+                ) : null}
+              </article>
+            ))
+          ) : (
+            <div className="border border-dashed p-10 text-sm text-muted-foreground">Education entries will appear here.</div>
+          )}
+        </div>
+      </SectionShell>
+
+      <SectionShell className="pt-8">
+        <CertificationSection certifications={certifications} />
+      </SectionShell>
+
+      <SectionShell className="pt-8">
         <section>
           <SectionHeading>./links</SectionHeading>
           <div className="flex flex-wrap gap-2">

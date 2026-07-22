@@ -25,6 +25,22 @@ async function auth() {
 }
 
 export const uploadRouter = {
+  certificationBadge: upload({
+    image: {
+      maxFileCount: 1,
+      maxFileSize: "2MB",
+    },
+  })
+    .middleware(auth)
+    .onUploadComplete(({ file }) => uploadedFileMeta(file)),
+  certificationLogo: upload({
+    image: {
+      maxFileCount: 1,
+      maxFileSize: "2MB",
+    },
+  })
+    .middleware(auth)
+    .onUploadComplete(({ file }) => uploadedFileMeta(file)),
   blogCover: upload({
     image: {
       maxFileCount: 1,

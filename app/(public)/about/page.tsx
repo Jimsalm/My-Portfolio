@@ -10,6 +10,7 @@ import {
 import { getProfileName } from "@/features/portfolio/lib/utils";
 import {
   safePublicAbout,
+  safePublicCertifications,
   safePublicSettings,
 } from "@/features/portfolio/server/public-data";
 
@@ -31,11 +32,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PublicAboutPage() {
-  const about = await safePublicAbout();
+  const [about, certifications] = await Promise.all([
+    safePublicAbout(),
+    safePublicCertifications(),
+  ]);
   return (
     <>
       <script {...jsonLdScriptProps(personJsonLd(about))} />
-      <AboutPage initialData={about} />
+      <AboutPage initialCertifications={certifications} initialData={about} />
     </>
   );
 }

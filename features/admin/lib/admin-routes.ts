@@ -2,6 +2,7 @@ export const adminRoutes = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/projects", label: "Projects" },
   { href: "/admin/blog", label: "Blog Posts" },
+  { href: "/admin/certifications", label: "Certifications" },
   { href: "/admin/about", label: "About/Resume" },
   { href: "/admin/settings", label: "Settings" },
 ] as const;

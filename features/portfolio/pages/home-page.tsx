@@ -6,6 +6,7 @@ import { m } from "framer-motion";
 
 import { ContactForm } from "@/features/contact/components/contact-form";
 import { BlogCard } from "@/features/portfolio/components/blog-card";
+import { CertificationSection } from "@/features/portfolio/components/certification-section";
 import { ProjectCard } from "@/features/portfolio/components/project-card";
 import { EditorPanel, IconButton, SectionHeading, SectionShell, TerminalPanel, TextButton } from "@/features/portfolio/components/ui-atoms";
 import { usePublicHome } from "@/features/portfolio/hooks/use-public-data";
@@ -146,6 +147,15 @@ export function HomePage({ initialData }: { initialData: PublicHomeData }) {
           cat ./writing
         </Link>
       </SectionShell>
+
+      {data.featuredCertifications.length ? (
+        <SectionShell>
+          <CertificationSection
+            certifications={data.featuredCertifications}
+            description="status=published && featured=true | limit=3"
+          />
+        </SectionShell>
+      ) : null}
 
       <SectionShell className="pb-28">
         <SectionHeading description="secure endpoint · resend email · protected by rate limit">

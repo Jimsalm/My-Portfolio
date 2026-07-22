@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { apiRequest } from "@/lib/axios";
 import { portfolioQueryKeys } from "@/features/portfolio/query-keys";
+import type { Certification } from "@/features/certifications/schemas";
 import type {
   PublicAbout,
   PublicBlogPost,
@@ -71,6 +72,19 @@ export function usePublicAbout(initialData?: PublicAbout | null) {
     initialData,
     queryFn: () => apiRequest<PublicAbout | null>({ method: "GET", url: "/api/public/about" }),
     queryKey: portfolioQueryKeys.about,
+    refetchOnMount: false,
+  });
+}
+
+export function usePublicCertifications(initialData?: Certification[]) {
+  return useQuery({
+    initialData,
+    queryFn: () =>
+      apiRequest<Certification[]>({
+        method: "GET",
+        url: "/api/public/certifications",
+      }),
+    queryKey: portfolioQueryKeys.certifications,
     refetchOnMount: false,
   });
 }

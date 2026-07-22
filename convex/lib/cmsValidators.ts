@@ -46,6 +46,21 @@ export const blogPostInput = v.object({
   title: v.string(),
 });
 
+export const certificationInput = v.object({
+  badgeImage: nullableUploadedFile,
+  credentialId: v.string(),
+  credentialUrl: v.string(),
+  doesNotExpire: v.boolean(),
+  expiryDate: v.union(v.string(), v.null()),
+  featured: v.boolean(),
+  issueDate: v.string(),
+  name: v.string(),
+  order: v.number(),
+  organization: v.string(),
+  organizationLogo: nullableUploadedFile,
+  status,
+});
+
 export const socialLinks = v.object({
   github: v.string(),
   linkedin: v.string(),

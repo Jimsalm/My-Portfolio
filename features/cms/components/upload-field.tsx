@@ -6,6 +6,7 @@ import { FileText, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { ImagePreviewDialog } from "@/components/image-preview-dialog";
 import { apiRequest } from "@/lib/axios";
 import { useUploadThing } from "@/lib/uploadthing";
 import { type UploadedFile } from "@/features/cms/schemas";
@@ -13,6 +14,8 @@ import { createBlurDataURL, fallbackBlurDataURL } from "@/features/portfolio/lib
 
 type UploadEndpoint =
   | "blogCover"
+  | "certificationBadge"
+  | "certificationLogo"
   | "profilePhoto"
   | "projectThumbnail"
   | "resumePdf";
@@ -21,6 +24,7 @@ type UploadFieldProps = {
   accept: string;
   endpoint: UploadEndpoint;
   label: string;
+  maxSizeMb?: number;
   onChange: (file: UploadedFile | null) => void;
   value: UploadedFile | null | undefined;
 };
@@ -29,6 +33,7 @@ export function UploadField({
   accept,
   endpoint,
   label,
+  maxSizeMb,
   onChange,
   value,
 }: UploadFieldProps) {
@@ -44,6 +49,7 @@ export function UploadField({
     uploadProgressGranularity: "fine",
   });
   const isImage = accept.includes("image");
+  const acceptedTypes = accept.split(",").map((type) => type.trim());
   const preview = localPreview ?? value?.url ?? null;
   const previewBlur = localPreviewBlur ?? value?.blurDataURL;
 
@@ -55,6 +61,16 @@ export function UploadField({
 
     if (!isImage && file.type !== "application/pdf") {
       toast.error("Please choose a PDF file.");
+      return;
+    }
+
+    if (!acceptedTypes.includes("image/*") && !acceptedTypes.includes(file.type)) {
+      toast.error("This file type is not supported.");
+      return;
+    }
+
+    if (maxSizeMb && file.size > maxSizeMb * 1024 * 1024) {
+      toast.error(`File must be ${maxSizeMb} MB or smaller.`);
       return;
     }
 
@@ -107,18 +123,28 @@ export function UploadField({
         {value || preview ? (
           <div className="flex items-center gap-3">
             {isImage && preview ? (
-              <div className="relative size-16 border bg-muted">
-                <Image
-                  alt=""
-                  blurDataURL={previewBlur ?? value?.blurDataURL ?? fallbackBlurDataURL}
-                  className="object-cover"
-                  fill
-                  placeholder="blur"
-                  sizes="64px"
-                  src={preview}
-                  unoptimized
-                />
-              </div>
+              <ImagePreviewDialog
+                alt={`${label} preview`}
+                blurDataURL={previewBlur ?? value?.blurDataURL}
+                src={preview}
+              >
+                <button
+                  aria-label={`Preview ${label}`}
+                  className="relative size-16 cursor-zoom-in border bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  type="button"
+                >
+                  <Image
+                    alt={`${label} preview`}
+                    blurDataURL={previewBlur ?? value?.blurDataURL ?? fallbackBlurDataURL}
+                    className="object-cover"
+                    fill
+                    placeholder="blur"
+                    sizes="64px"
+                    src={preview}
+                    unoptimized
+                  />
+                </button>
+              </ImagePreviewDialog>
             ) : (
               <div className="flex size-16 items-center justify-center border bg-muted">
                 <FileText aria-hidden="true" className="size-6" />

@@ -3,6 +3,7 @@ import "server-only";
 import { fetchQuery } from "convex/nextjs";
 
 import { api } from "@/convex/_generated/api";
+import type { Certification } from "@/features/certifications/schemas";
 import type {
   PublicAbout,
   PublicBlogPost,
@@ -45,6 +46,10 @@ export async function getPublicAbout(): Promise<PublicAbout | null> {
   return await fetchQuery(api.api.publicContent.about);
 }
 
+export async function getPublicCertifications(): Promise<Certification[]> {
+  return await fetchQuery(api.api.publicContent.certifications);
+}
+
 export async function getPublicSettings(): Promise<PublicSiteSettings> {
   return await fetchQuery(api.api.settings.getPublicSettings);
 }
@@ -53,7 +58,12 @@ export async function safePublicHome(): Promise<PublicHomeData> {
   try {
     return await getPublicHome();
   } catch {
-    return { about: null, featuredProjects: [], latestPosts: [] };
+    return {
+      about: null,
+      featuredCertifications: [],
+      featuredProjects: [],
+      latestPosts: [],
+    };
   }
 }
 
@@ -78,6 +88,14 @@ export async function safePublicAbout(): Promise<PublicAbout | null> {
     return await getPublicAbout();
   } catch {
     return null;
+  }
+}
+
+export async function safePublicCertifications(): Promise<Certification[]> {
+  try {
+    return await getPublicCertifications();
+  } catch {
+    return [];
   }
 }
 

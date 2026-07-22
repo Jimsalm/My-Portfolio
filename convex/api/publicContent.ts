@@ -41,6 +41,26 @@ function normalizeBlogPost(post: Doc<"blogPosts">) {
   };
 }
 
+function normalizeCertification(certification: Doc<"certifications">) {
+  return {
+    id: certification._id,
+    badgeImage: certification.badgeImage,
+    createdAt: certification.createdAt,
+    credentialId: certification.credentialId,
+    credentialUrl: certification.credentialUrl,
+    doesNotExpire: certification.doesNotExpire,
+    expiryDate: certification.expiryDate,
+    featured: certification.featured,
+    issueDate: certification.issueDate,
+    name: certification.name,
+    order: certification.order,
+    organization: certification.organization,
+    organizationLogo: certification.organizationLogo,
+    status: certification.status,
+    updatedAt: certification.updatedAt,
+  };
+}
+
 function normalizeAbout(about: Doc<"profile">) {
   return {
     id: about._id,
@@ -77,6 +97,17 @@ function isPublishedPost(post: Doc<"blogPosts">) {
   return post.status === "published";
 }
 
+function isPublishedCertification(certification: Doc<"certifications">) {
+  return certification.status === "published";
+}
+
+function sortCertifications(
+  left: ReturnType<typeof normalizeCertification>,
+  right: ReturnType<typeof normalizeCertification>,
+) {
+  return left.order - right.order || right.updatedAt - left.updatedAt;
+}
+
 function sharedCount(left: string[], right: string[]) {
   const rightSet = new Set(right.map((item) => item.toLowerCase()));
   return left.reduce(
@@ -98,10 +129,11 @@ async function getAbout(ctx: QueryCtx) {
 export const home = query({
   args: {},
   handler: async (ctx) => {
-    const [about, projects, posts] = await Promise.all([
+    const [about, projects, posts, certifications] = await Promise.all([
       getAbout(ctx),
       ctx.db.query("projects").collect(),
       ctx.db.query("blogPosts").withIndex("by_updatedAt").order("desc").collect(),
+      ctx.db.query("certifications").collect(),
     ]);
 
     const featuredProjects = projects
@@ -117,13 +149,32 @@ export const home = query({
       .sort((a, b) => (b.publishedAt ?? b.updatedAt) - (a.publishedAt ?? a.updatedAt))
       .slice(0, 3);
 
-    return { about, featuredProjects, latestPosts };
+    const featuredCertifications = certifications
+      .filter(isPublishedCertification)
+      .map(normalizeCertification)
+      .sort(sortCertifications)
+      .filter((certification) => certification.featured)
+      .slice(0, 3);
+
+    return { about, featuredCertifications, featuredProjects, latestPosts };
   },
 });
 
 export const about = query({
   args: {},
   handler: async (ctx) => getAbout(ctx),
+});
+
+export const certifications = query({
+  args: {},
+  handler: async (ctx) => {
+    const certifications = await ctx.db.query("certifications").collect();
+
+    return certifications
+      .filter(isPublishedCertification)
+      .map(normalizeCertification)
+      .sort(sortCertifications);
+  },
 });
 
 export const projects = query({

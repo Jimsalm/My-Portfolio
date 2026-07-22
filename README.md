@@ -14,7 +14,7 @@ Public pages:
 - `/` - Homepage with selected work, recent writing, and contact form
 - `/projects` - Published project archive with technology filters
 - `/blog` - Published blog archive with search, filters, and pagination
-- `/about` - Profile, skills, experience timeline, education, and resume
+- `/about` - Profile, skills, experience timeline, education, certifications, and resume
 
 Admin pages:
 
@@ -22,6 +22,7 @@ Admin pages:
 - `/admin` - Dashboard overview
 - `/admin/projects` - Project management
 - `/admin/blog` - Blog post management
+- `/admin/certifications` - Certification management
 - `/admin/about` - Profile and resume management
 - `/admin/settings` - Account, site metadata, and public badge settings
 
