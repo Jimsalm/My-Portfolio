@@ -31,14 +31,26 @@ export function TerminalPreloader({ onComplete }: { onComplete?: () => void }) {
   }, [onComplete]);
 
   useEffect(() => {
-    const hasSeenPreloader = window.sessionStorage.getItem(storageKey) === "true";
+    let hasSeenPreloader = false;
+
+    try {
+      hasSeenPreloader = window.sessionStorage.getItem(storageKey) === "true";
+    } catch {
+      hasSeenPreloader = true;
+    }
 
     if (hasSeenPreloader) {
       queueMicrotask(complete);
       return;
     }
 
-    window.sessionStorage.setItem(storageKey, "true");
+    try {
+      window.sessionStorage.setItem(storageKey, "true");
+    } catch {
+      queueMicrotask(complete);
+      return;
+    }
+
     queueMicrotask(() => setIsVisible(true));
   }, [complete]);
 
@@ -104,7 +116,7 @@ export function TerminalPreloader({ onComplete }: { onComplete?: () => void }) {
         <m.div
           aria-label="Loading portfolio"
           aria-live="polite"
-          className="fixed inset-0 z-[120] grid place-items-center bg-background font-mono text-foreground"
+          className="fixed inset-0 z-[120] grid h-[100dvh] place-items-center bg-background font-mono text-foreground"
           exit={{ opacity: 0 }}
           initial={{ opacity: 1 }}
           role="status"

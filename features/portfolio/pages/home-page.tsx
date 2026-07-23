@@ -54,7 +54,7 @@ export function HomePage({ initialData }: { initialData: PublicHomeData }) {
 
   return (
     <>
-      <SectionShell className="flex min-h-[calc(100vh-4rem)] items-center">
+      <SectionShell className="flex min-h-[calc(100svh-4rem)] items-center py-16 md:min-h-[calc(100vh-4rem)] md:py-20">
         <m.div
           animate="visible"
           className="grid w-full gap-8 lg:grid-cols-[1fr_420px] lg:items-end"
