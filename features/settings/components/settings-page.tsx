@@ -41,7 +41,7 @@ import {
   type PasswordSettingsFormValues,
   type SiteSettingsFormValues,
 } from "@/features/settings/schemas";
-import { ApiRequestError } from "@/lib/axios";
+import { ApiRequestError } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 
 const badgeOptions: Array<{

@@ -1,13 +1,12 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import type { ContactFormValues } from "@/features/contact/contact-schema";
-import { apiRequest } from "@/lib/axios";
+import { apiRequest, useApiMutation } from "@/lib/api-client";
 
 export function useSendContactMessage() {
-  return useMutation({
+  return useApiMutation({
     mutationFn: (input: ContactFormValues) =>
       apiRequest<{ ok: true }>({
         data: input,

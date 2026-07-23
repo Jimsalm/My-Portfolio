@@ -1,9 +1,9 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery as useConvexQuery } from "convex/react";
 import { toast } from "sonner";
 
-import { portfolioQueryKeys } from "@/features/portfolio/query-keys";
+import { api } from "@/convex/_generated/api";
 import { settingsQueryKeys } from "@/features/settings/query-keys";
 import type {
   AccountSettings,
@@ -14,10 +14,10 @@ import type {
   PublicSiteSettings,
   SiteSettingsFormValues,
 } from "@/features/settings/schemas";
-import { apiRequest } from "@/lib/axios";
+import { apiRequest, useApiMutation, useApiQuery } from "@/lib/api-client";
 
 export function useAdminSettings() {
-  return useQuery({
+  return useApiQuery({
     queryFn: () =>
       apiRequest<AdminSettings>({ method: "GET", url: "/api/admin/settings" }),
     queryKey: settingsQueryKeys.admin,
@@ -25,40 +25,30 @@ export function useAdminSettings() {
 }
 
 export function usePublicSettings(initialData?: PublicSiteSettings) {
-  return useQuery({
-    initialData,
-    queryFn: () =>
-      apiRequest<PublicSiteSettings>({
-        method: "GET",
-        url: "/api/public/settings",
-      }),
-    queryKey: settingsQueryKeys.public,
-    refetchOnMount: false,
-  });
+  const data = useConvexQuery(api.api.settings.getPublicSettings, {});
+
+  return {
+    data: data ?? initialData,
+    isLoading: data === undefined && initialData === undefined,
+  };
 }
 
 export function useUpdateAccountSettings() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
+  return useApiMutation({
+    invalidate: [settingsQueryKeys.admin],
     mutationFn: (input: AccountSettingsFormValues) =>
       apiRequest<AccountSettings>({
         data: input,
         method: "PUT",
         url: "/api/admin/settings/account",
       }),
-    onSuccess: (account) => {
-      queryClient.setQueryData<AdminSettings>(settingsQueryKeys.admin, (current) =>
-        current ? { ...current, account } : current,
-      );
-      toast.success("Settings saved successfully");
-    },
+    onSuccess: () => toast.success("Settings saved successfully"),
     onError: () => toast.error("Failed to save. Please try again."),
   });
 }
 
 export function useUpdatePasswordSettings() {
-  return useMutation({
+  return useApiMutation({
     mutationFn: (input: PasswordSettingsFormValues) =>
       apiRequest<{ success: boolean }>({
         data: input,
@@ -71,50 +61,29 @@ export function useUpdatePasswordSettings() {
 }
 
 export function useUpdateSiteSettings() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
+  return useApiMutation({
+    invalidate: [settingsQueryKeys.admin],
     mutationFn: (input: SiteSettingsFormValues) =>
       apiRequest<PublicSiteSettings>({
         data: input,
         method: "PUT",
         url: "/api/admin/settings/site",
       }),
-    onSuccess: (site) => {
-      queryClient.setQueryData<AdminSettings>(settingsQueryKeys.admin, (current) =>
-        current ? { ...current, site } : current,
-      );
-      queryClient.setQueryData(settingsQueryKeys.public, site);
-      toast.success("Settings saved successfully");
-    },
+    onSuccess: () => toast.success("Settings saved successfully"),
     onError: () => toast.error("Failed to save. Please try again."),
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: settingsQueryKeys.public });
-      queryClient.invalidateQueries({ queryKey: portfolioQueryKeys.home });
-    },
   });
 }
 
 export function useUpdateBadgeSettings() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
+  return useApiMutation({
+    invalidate: [settingsQueryKeys.admin],
     mutationFn: (input: BadgeSettingsFormValues) =>
       apiRequest<PublicSiteSettings>({
         data: input,
         method: "PUT",
         url: "/api/admin/settings/badge",
       }),
-    onSuccess: (site) => {
-      queryClient.setQueryData<AdminSettings>(settingsQueryKeys.admin, (current) =>
-        current ? { ...current, site } : current,
-      );
-      queryClient.setQueryData(settingsQueryKeys.public, site);
-      toast.success("Settings saved successfully");
-    },
+    onSuccess: () => toast.success("Settings saved successfully"),
     onError: () => toast.error("Failed to save. Please try again."),
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: settingsQueryKeys.public });
-    },
   });
 }

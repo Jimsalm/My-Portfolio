@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { ImagePreviewDialog } from "@/components/image-preview-dialog";
-import { apiRequest } from "@/lib/axios";
+import { apiRequest } from "@/lib/api-client";
 import { useUploadThing } from "@/lib/uploadthing";
 import { type UploadedFile } from "@/features/cms/schemas";
 import { createBlurDataURL, fallbackBlurDataURL } from "@/features/portfolio/lib/image-placeholders";

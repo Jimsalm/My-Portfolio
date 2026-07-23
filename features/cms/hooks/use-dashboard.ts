@@ -1,13 +1,11 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-
-import { apiRequest } from "@/lib/axios";
+import { apiRequest, useApiQuery } from "@/lib/api-client";
 import { queryKeys } from "@/features/cms/query-keys";
 import { type DashboardOverviewData } from "@/features/cms/schemas";
 
 export function useDashboardOverview() {
-  return useQuery({
+  return useApiQuery({
     queryFn: () =>
       apiRequest<DashboardOverviewData>({
         method: "GET",
