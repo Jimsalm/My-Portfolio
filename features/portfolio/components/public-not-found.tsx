@@ -1,6 +1,26 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export function PublicNotFoundPanel() {
+  const router = useRouter();
+  const [countdown, setCountdown] = useState(5);
+
+  useEffect(() => {
+    if (countdown === 0) {
+      router.push("/");
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [countdown, router]);
+
   return (
     <section className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-6xl flex-col justify-center px-5 py-20">
       <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
@@ -9,6 +29,8 @@ export function PublicNotFoundPanel() {
       <h1 className="mt-4 font-mono text-4xl font-semibold md:text-6xl">404: not found</h1>
       <p className="mt-5 max-w-2xl font-mono text-sm leading-7 text-muted-foreground">
         The requested portfolio entry is unavailable, unpublished, or has moved.
+        <br />
+        <span className="animate-pulse">Redirecting to ~ in {countdown}s...</span>
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
         <Link
