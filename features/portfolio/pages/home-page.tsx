@@ -62,7 +62,7 @@ export function HomePage({ initialData }: { initialData: PublicHomeData }) {
           transition={motionTransition}
           variants={staggerContainer}
         >
-          <m.div variants={fadeUp}>
+          <m.div className="min-w-0" variants={fadeUp}>
             <p className="font-mono text-sm text-muted-foreground">{handle}:~$ whoami</p>
             <h1 className="mt-6 font-mono text-5xl font-semibold leading-[0.95] tracking-tight md:text-7xl lg:text-8xl">
               {name}
@@ -82,7 +82,7 @@ export function HomePage({ initialData }: { initialData: PublicHomeData }) {
               </TextButton>
             </div>
           </m.div>
-          <m.div variants={fadeUp}>
+          <m.div className="min-w-0" variants={fadeUp}>
             <EditorPanel fileName="session.info.ts" lines={sessionInfoLines} />
           </m.div>
         </m.div>
@@ -162,27 +162,31 @@ export function HomePage({ initialData }: { initialData: PublicHomeData }) {
           ./contact
         </SectionHeading>
         <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-          <TerminalPanel title="contact.sh">
-            <p className="font-mono text-sm text-muted-foreground">{handle}:~/contact$ ./open-channel</p>
-            <h2 className="mt-5 max-w-3xl font-mono text-4xl font-semibold tracking-tight md:text-5xl">
-              let&apos;s build something careful.
-            </h2>
-            <p className="mt-5 max-w-2xl font-mono text-sm leading-7 text-muted-foreground">
-              Have a product, portfolio, or system that needs clean engineering? Send the brief here and it lands in my inbox.
-            </p>
-            <a className="mt-8 inline-flex break-all font-mono text-xl font-semibold tracking-tight hover:underline md:text-3xl" href={`mailto:${email}`}>
-              mailto:{email}
-            </a>
-            <div className="mt-8 flex flex-wrap gap-2">
-              <IconButton href={`mailto:${email}`} icon={Mail} label="Email" />
-              {socialEntries(about).map((entry) => {
-                const Icon = socialIcons[entry.type as keyof typeof socialIcons] ?? Globe;
-                return <IconButton href={entry.href} icon={Icon} key={entry.type} label={entry.label} />;
-              })}
-              {about?.resumeFile?.url ? <IconButton href={about.resumeFile.url} icon={FileDown} label="Resume" /> : null}
-            </div>
-          </TerminalPanel>
-          <ContactForm />
+          <div className="min-w-0">
+            <TerminalPanel title="contact.sh">
+              <p className="font-mono text-sm text-muted-foreground">{handle}:~/contact$ ./open-channel</p>
+              <h2 className="mt-5 max-w-3xl font-mono text-4xl font-semibold tracking-tight md:text-5xl">
+                let&apos;s build something careful.
+              </h2>
+              <p className="mt-5 max-w-2xl font-mono text-sm leading-7 text-muted-foreground">
+                Have a product, portfolio, or system that needs clean engineering? Send the brief here and it lands in my inbox.
+              </p>
+              <a className="mt-8 inline-flex break-all font-mono text-xl font-semibold tracking-tight hover:underline md:text-3xl" href={`mailto:${email}`}>
+                mailto:{email}
+              </a>
+              <div className="mt-8 flex flex-wrap gap-2">
+                <IconButton href={`mailto:${email}`} icon={Mail} label="Email" />
+                {socialEntries(about).map((entry) => {
+                  const Icon = socialIcons[entry.type as keyof typeof socialIcons] ?? Globe;
+                  return <IconButton href={entry.href} icon={Icon} key={entry.type} label={entry.label} />;
+                })}
+                {about?.resumeFile?.url ? <IconButton href={about.resumeFile.url} icon={FileDown} label="Resume" /> : null}
+              </div>
+            </TerminalPanel>
+          </div>
+          <div className="min-w-0">
+            <ContactForm />
+          </div>
         </div>
       </SectionShell>
     </>
